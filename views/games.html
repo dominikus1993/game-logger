@@ -1,3 +1,9 @@
 {{define "games"}}
-<h1> Test Game {{.Games}} </h1>    
+    {{range .Games}}
+    <div>
+      <h2>{{.Name}}</h2>
+      <p>{{.Rating}}</p>
+      <p>{{.Platform}}</p>
+    </div>
+    {{end}}
 {{end}}

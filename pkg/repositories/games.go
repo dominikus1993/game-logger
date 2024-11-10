@@ -25,5 +25,6 @@ func NewFakeGamesRepository() *FakeGamesRepository {
 func (r *FakeGamesRepository) GetGames(ctx context.Context, req *GetGamesRequest) ([]data.Game, error) {
 	return []data.Game{
 		{ID: "1", Name: "Game 1", PlayStart: "2021-01-01", PlayEnd: "2021-01-02", Rating: 5, Platform: "PS4"},
+		{ID: "2", Name: "Game 2", PlayStart: "2021-01-02", PlayEnd: "2021-01-03", Rating: 4, Platform: "PS4"},
 	}, nil
 }
