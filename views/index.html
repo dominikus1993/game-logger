@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="https://unpkg.com/htmx.org@2.0.3"></script>
     <title>{{.Title}}</title>
   </head>
 
   <body>
     <h1>Index {{.Title}} </h1>
+    {{template "game" .}}
   </body>
 </html>
