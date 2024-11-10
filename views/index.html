@@ -8,5 +8,6 @@
   <body>
     <h1>Index {{.Title}} </h1>
     {{template "game" .}}
+    <div id="games" hx-get="/games" hx-trigger="load" hx-swap="innerHTML">
   </body>
 </html>

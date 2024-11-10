@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/dominikus1993/game-logger/pkg/data"
 	"github.com/gofiber/template/html/v2"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,6 +25,14 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Render("index", fiber.Map{
 			"Title": "Hello, World!",
+		})
+	})
+
+	app.Get("/games", func(c *fiber.Ctx) error {
+		return c.Render("games", fiber.Map{
+			"Games": []data.Game{
+				{ID: "1", Name: "Game 1", PlayStart: "2021-01-01", PlayEnd: "2021-01-02", Rating: 5, Platform: "PS4"},
+			},
 		})
 	})
 
