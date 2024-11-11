@@ -1,4 +1,4 @@
-using GameLogger.App.Components;
+using GameLogger.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
