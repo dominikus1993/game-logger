@@ -1,5 +1,6 @@
 @page "/games"
 @using GameLogger.Core.Data
+@using GameLogger.Core.Repositories
 @using GameLogger.Core.UseCases
 @inject GetGamesUseCase GetGamesUseCase
 @rendermode InteractiveServer
@@ -44,7 +45,7 @@ else
     private IReadOnlyList<Game>? games;
     protected override async Task OnInitializedAsync()
     {
-       var result = await GetGamesUseCase.Execute();
+       var result = await GetGamesUseCase.Execute(new GetGamesQuery(1, 12));
        games = result;
     }
 }
