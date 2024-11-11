@@ -4,8 +4,8 @@ namespace GameLogger.Core.UseCases;
 
 public sealed class GetGamesUseCase
 {
-    public IAsyncEnumerable<Game> Execute(CancellationToken cancellationToken = default)
+    public Task<IReadOnlyList<Game>> Execute(CancellationToken cancellationToken = default)
     {
-        return AsyncEnumerable.Empty<Game>();
+        return Task.FromResult<IReadOnlyList<Game>>([]);
     }
 }

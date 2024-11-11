@@ -9,7 +9,7 @@
 <h1>Weather</h1>
 
 <p>This component demonstrates showing data.</p>
-@if (IsLoading)
+@if (games is null)
 {
     <p>
         <em>Loading...</em>
@@ -41,14 +41,10 @@ else
 }
 
 @code {
-    private List<Game> games = [];
-    private bool IsLoading = true;
+    private IReadOnlyList<Game>? games;
     protected override async Task OnInitializedAsync()
     {
-       await foreach(var game in GetGamesUseCase.Execute())
-       {
-           games.Add(game);
-       }
-       IsLoading = false;
+       var result = await GetGamesUseCase.Execute();
+       games = result;
     }
 }
