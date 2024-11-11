@@ -1,5 +1,54 @@
-<h3>Games</h3>
+@page "/games"
+@using GameLogger.Core.Data
+@using GameLogger.Core.UseCases
+@inject GetGamesUseCase GetGamesUseCase
+@rendermode InteractiveServer
+
+<PageTitle>Games</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+@if (IsLoading)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th aria-label="Temperature in Celsius">Temp. (C)</th>
+            <th aria-label="Temperature in Farenheit">Temp. (F)</th>
+            <th>Summary</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var forecast in games)
+        {
+            <tr>
+                <td>@forecast.FinishDate</td>
+                <td>@forecast.Id</td>
+                <td>@forecast.Title</td>
+                <td>@forecast.Rating</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
 
 @code {
-    
+    private List<Game> games = [];
+    private bool IsLoading = true;
+    protected override async Task OnInitializedAsync()
+    {
+       await foreach(var game in GetGamesUseCase.Execute())
+       {
+           games.Add(game);
+       }
+       IsLoading = false;
+    }
 }
