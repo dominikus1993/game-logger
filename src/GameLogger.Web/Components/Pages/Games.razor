@@ -7,7 +7,7 @@
 
 <PageTitle>Games</PageTitle>
 
-<h1>Weather</h1>
+<h1>Games</h1>
 
 <p>This component demonstrates showing data.</p>
 @if (games is null)
@@ -21,20 +21,22 @@ else
     <table class="table">
         <thead>
         <tr>
-            <th>Date</th>
-            <th aria-label="Temperature in Celsius">Temp. (C)</th>
-            <th aria-label="Temperature in Farenheit">Temp. (F)</th>
-            <th>Summary</th>
+            <th>Title</th>
+            <th aria-label="Temperature in Celsius">Start Date</th>
+            <th aria-label="Temperature in Farenheit">End Date</th>
+            <th>Rating</th>
+            <th>Hours Played</th>
         </tr>
         </thead>
         <tbody>
         @foreach (var forecast in games)
         {
             <tr>
-                <td>@forecast.FinishDate</td>
-                <td>@forecast.Id</td>
                 <td>@forecast.Title</td>
+                <td>@forecast.StartDate</td>
+                <td>@forecast.FinishDate</td>
                 <td>@forecast.Rating</td>
+                <td>@forecast.HoursPlayed</td>
             </tr>
         }
         </tbody>

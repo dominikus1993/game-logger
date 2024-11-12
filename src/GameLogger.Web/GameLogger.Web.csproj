@@ -10,4 +10,10 @@
     <ProjectReference Include="..\GameLogger.Core\GameLogger.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Games.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
