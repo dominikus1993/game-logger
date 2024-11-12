@@ -24,4 +24,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\GameLogger.Infrastructure\GameLogger.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

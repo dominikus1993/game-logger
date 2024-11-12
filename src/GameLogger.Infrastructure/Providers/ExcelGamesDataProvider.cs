@@ -10,7 +10,7 @@ public sealed class ExcelConfiguration
     public string Path { get; set; }
 }
 
-internal sealed class ExcelGamesDataProvider : IGamesDataProvider
+public sealed class ExcelGamesDataProvider : IGamesDataProvider
 {
     private readonly ExcelConfiguration _configuration;
     
