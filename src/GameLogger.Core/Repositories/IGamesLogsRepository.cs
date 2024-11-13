@@ -1,4 +1,5 @@
 using GameLogger.Core.Data;
+using GameLogger.Core.Providers;
 
 namespace GameLogger.Core.Repositories;
 
@@ -10,8 +11,15 @@ public interface IGamesLogsRepository
 
 public sealed class FakeGamesLogsRepository : IGamesLogsRepository
 {
-    public Task<IReadOnlyList<Game>> GetGames(GetGamesQuery query, CancellationToken cancellationToken = default)
+    private readonly IGamesDataProvider _gamesDataProvider;
+
+    public FakeGamesLogsRepository(IGamesDataProvider gamesDataProvider)
     {
-        return Task.FromResult<IReadOnlyList<Game>>([]);
+        _gamesDataProvider = gamesDataProvider;
+    }
+
+    public async Task<IReadOnlyList<Game>> GetGames(GetGamesQuery query, CancellationToken cancellationToken = default)
+    {
+        return await _gamesDataProvider.Provide(cancellationToken).ToArrayAsync(cancellationToken: cancellationToken);
     }
 }

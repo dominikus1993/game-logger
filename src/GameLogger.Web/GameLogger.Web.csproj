@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameLogger.Core\GameLogger.Core.csproj" />
+    <ProjectReference Include="..\GameLogger.Infrastructure\GameLogger.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
