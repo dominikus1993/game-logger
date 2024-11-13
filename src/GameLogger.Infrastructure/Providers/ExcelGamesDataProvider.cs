@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using ClosedXML.Excel;
 using GameLogger.Core.Data;
@@ -39,17 +40,34 @@ public sealed class ExcelGamesDataProvider : IGamesDataProvider
             var startDate = row.Cell(4);
             var endDate = row.Cell(5);
             var playTime = row.Cell(6);
+
+            var titleStr = title.GetString();
+            if (string.IsNullOrEmpty(titleStr))
+            {
+                yield break;
+            }
             
             yield return new Game
             {
-                Title = title.GetString(),
-                Rating = rating.GetValue<ushort>(),
+                Id = Guid.CreateVersion7(),
+                Title = titleStr,
+                Rating = rating.GetValue<ushort?>(),
                 Platform = platform.GetString(),
-                StartDate = startDate.GetDateTime(),
-                FinishDate = endDate.GetDateTime(),
-                HoursPlayed = playTime.GetValue<ushort>()
+                StartDate = GetDate(startDate) ?? throw new InvalidOperationException("Start date is required"),
+                FinishDate = GetDate(endDate),
+                HoursPlayed = playTime.GetValue<ushort?>()
             };
         }
         
+    }
+    
+    private static DateOnly? GetDate(IXLCell cell)
+    {
+        var date = cell.GetFormattedString();
+        if (string.IsNullOrEmpty(date))
+        {
+            return null;
+        }
+        return DateOnly.ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
     }
 }
