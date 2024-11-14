@@ -39,4 +39,17 @@ public sealed class MongoGamesLogsRepository : IGamesLogsRepository
             return Result.Failure<Unit>(e);
         }
     }
+
+    public async Task<Result<Unit>> DeleteGame(Guid id, CancellationToken cancellationToken = default)
+    {
+        var filter = Builders<Game>.Filter.Eq(g => g.Id, id);
+        var result = await _games.DeleteOneAsync(filter, cancellationToken: cancellationToken);
+        
+        if (result.DeletedCount == 0)
+        {
+            return Result.Failure<Unit>(new InvalidOperationException("Game not found"));
+        }
+        
+        return Result.UnitResult;
+    }
 }

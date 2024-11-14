@@ -10,6 +10,8 @@ public interface IGamesLogsRepository
     Task<IReadOnlyList<Game>> GetGames(GetGamesQuery query, CancellationToken cancellationToken = default);
     
     Task<Result<Unit>> WriteGame(Game game, CancellationToken cancellationToken = default);
+    
+    Task<Result<Unit>> DeleteGame(Guid id, CancellationToken cancellationToken = default);
 }
 
 public sealed class FakeGamesLogsRepository : IGamesLogsRepository
@@ -27,6 +29,11 @@ public sealed class FakeGamesLogsRepository : IGamesLogsRepository
     }
 
     public Task<Result<Unit>> WriteGame(Game game, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(Result.UnitResult);
+    }
+
+    public Task<Result<Unit>> DeleteGame(Guid id, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(Result.UnitResult);
     }
