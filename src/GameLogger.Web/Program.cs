@@ -11,7 +11,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddCore();
 builder.Services.AddInfrastructure(builder.Configuration);
 var app = builder.Build();
-
+await app.Init();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -29,4 +29,4 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.Run();
+await app.RunAsync();

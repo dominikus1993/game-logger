@@ -1,5 +1,6 @@
 using GameLogger.Core.Providers;
 using GameLogger.Core.Repositories;
+using GameLogger.Infrastructure.Extensions;
 using GameLogger.Infrastructure.Providers;
 using GameLogger.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
@@ -30,7 +31,9 @@ public static class Setup
         services.AddSingleton<IMongoDatabase>(sp =>
         {
             var client = sp.GetRequiredService<IMongoClient>();
-            return client.GetDatabase("GamesLogger");
+            var db = client.GetDatabase("GamesLogger");
+            db.MapGamesCollection();
+            return db;
         });
     
         return services;
