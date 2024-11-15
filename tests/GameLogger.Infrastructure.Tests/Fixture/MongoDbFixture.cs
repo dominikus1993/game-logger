@@ -1,3 +1,4 @@
+using GameLogger.Infrastructure.Extensions;
 using MongoDB.Driver;
 using Testcontainers.MongoDb;
 
@@ -15,6 +16,7 @@ public sealed class MongoDbFixture : IAsyncLifetime
         await _container.StartAsync();
         Client = new MongoClient(_container.GetConnectionString());
         Database = Client.GetDatabase("GamesLogger");
+        Database.MapGamesCollection();
     }
 
     public Task DisposeAsync()

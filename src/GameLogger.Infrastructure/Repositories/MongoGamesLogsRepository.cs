@@ -20,9 +20,11 @@ public sealed class MongoGamesLogsRepository : IGamesLogsRepository
 
     public async Task<IReadOnlyList<Game>> GetGames(GetGamesQuery query, CancellationToken cancellationToken = default)
     {
+        var limit = query.PageSize;
+        var skip = query.PageSize * (query.Page - 1);
         var result = await _games.Find(FilterDefinition<Game>.Empty)
-            .Skip(query.PageSize * query.Page)
-            .Limit(query.PageSize)
+            .Skip(skip)
+            .Limit(limit)
             .ToListAsync(cancellationToken);
 
         return result;

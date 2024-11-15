@@ -32,7 +32,7 @@ public static class Setup
             var client = sp.GetRequiredService<IMongoClient>();
             return client.GetDatabase("GamesLogger");
         });
-
+    
         return services;
     }
 }
