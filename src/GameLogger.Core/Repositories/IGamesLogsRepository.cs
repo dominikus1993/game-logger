@@ -4,7 +4,7 @@ using GameLogger.Core.Types;
 
 namespace GameLogger.Core.Repositories;
 
-public sealed record GetGamesQuery(int Page, int PageSize);
+public sealed record GetGamesQuery(uint Page, ushort PageSize);
 public interface IGamesLogsRepository
 {
     Task<IReadOnlyList<Game>> GetGames(GetGamesQuery query, CancellationToken cancellationToken = default);
