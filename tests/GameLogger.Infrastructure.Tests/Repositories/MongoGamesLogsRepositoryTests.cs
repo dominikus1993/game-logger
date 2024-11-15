@@ -32,7 +32,7 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
 
         var game = new Game()
         {
-            Id = Guid.NewGuid(), Title = "Cyberpunk 2077", Rating = 8, Platform = "PC",
+            Id = Guid.CreateVersion7(), Title = "Cyberpunk 2077", Rating = 8, Platform = "PC",
             StartDate = DateOnly.FromDateTime(DateTime.Now),
             FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
         };
@@ -55,7 +55,7 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
 
         var game = new Game()
         {
-            Id = Guid.NewGuid(), Title = "Cyberpunk 2077", Rating = 8, Platform = "PC",
+            Id = Guid.CreateVersion7(), Title = "Cyberpunk 2077", Rating = 8, Platform = "PC",
             StartDate = DateOnly.FromDateTime(DateTime.Now),
             FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
         };
@@ -81,7 +81,7 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
 
         var game = new Game()
         {
-            Id = Guid.NewGuid(), Title = "Cyberpunk 2077", Rating = 8, Platform = "PC",
+            Id = Guid.CreateVersion7(), Title = "Cyberpunk 2077", Rating = 8, Platform = "PC",
             StartDate = DateOnly.FromDateTime(DateTime.Now),
             FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
         };
@@ -91,7 +91,7 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
         
         // Act
         
-        var deleteResult = await _repository.DeleteGame(Guid.NewGuid());
+        var deleteResult = await _repository.DeleteGame(Guid.CreateVersion7());
         Assert.False(deleteResult.IsSuccess);
         Assert.IsType<InvalidOperationException>(deleteResult.ErrorValue);
         
