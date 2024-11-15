@@ -1,6 +1,7 @@
 using GameLogger.Core.Data;
 using GameLogger.Core.Repositories;
 using GameLogger.Core.Types;
+using GameLogger.Infrastructure.Extensions;
 using MongoDB.Driver;
 
 namespace GameLogger.Infrastructure.Repositories;
@@ -14,7 +15,7 @@ public sealed class MongoGamesLogsRepository : IGamesLogsRepository
     public MongoGamesLogsRepository(IMongoDatabase mongoDatabase)
     {
         _mongoDatabase = mongoDatabase;
-        _games = _mongoDatabase.GetCollection<Game>(MongoCollectionName);
+        _games = _mongoDatabase.Games();
     }
 
     public async Task<IReadOnlyList<Game>> GetGames(GetGamesQuery query, CancellationToken cancellationToken = default)

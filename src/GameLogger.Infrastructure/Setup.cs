@@ -1,7 +1,10 @@
 using GameLogger.Core.Providers;
+using GameLogger.Core.Repositories;
 using GameLogger.Infrastructure.Providers;
+using GameLogger.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 
 namespace GameLogger.Infrastructure;
 
@@ -11,6 +14,24 @@ public static class Setup
     {
         services.AddSingleton(configuration.GetRequiredSection("Excel").Get<ExcelConfiguration>()!);
         services.AddScoped<IGamesDataProvider, ExcelGamesDataProvider>();
+        services.AddMongoDb(configuration);
+        services.AddScoped<IGamesLogsRepository, MongoGamesLogsRepository>();
+        return services;
+    }
+    
+    private static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSingleton(MongoClientSettings.FromConnectionString(configuration.GetConnectionString("GamesDb")));
+        services.AddSingleton<IMongoClient>(sp =>
+        {
+            var settings = sp.GetRequiredService<MongoClientSettings>();
+            return new MongoClient(settings);
+        });
+        services.AddSingleton<IMongoDatabase>(sp =>
+        {
+            var client = sp.GetRequiredService<IMongoClient>();
+            return client.GetDatabase("GamesLogger");
+        });
 
         return services;
     }
