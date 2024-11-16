@@ -1,0 +1,14 @@
+@rendermode InteractiveServer
+
+<tr>
+    <td>@Data.Title</td>
+    <td>@Data.StartDate</td>
+    <td>@Data.FinishDate</td>
+    <td>@Data.Rating</td>
+    <td>@Data.HoursPlayed</td>
+</tr>
+
+@code {
+    [Parameter]
+    public Core.Data.Game Data { get; set; }
+}

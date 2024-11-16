@@ -29,15 +29,9 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var forecast in games)
+        @foreach (var game in games)
         {
-            <tr>
-                <td>@forecast.Title</td>
-                <td>@forecast.StartDate</td>
-                <td>@forecast.FinishDate</td>
-                <td>@forecast.Rating</td>
-                <td>@forecast.HoursPlayed</td>
-            </tr>
+            <GameLogger.Web.Components.Games.Game Data="game"/>
         }
         </tbody>
     </table>
