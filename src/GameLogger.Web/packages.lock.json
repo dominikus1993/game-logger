@@ -163,7 +163,7 @@
       "gamelogger.infrastructure": {
         "type": "Project",
         "dependencies": {
-          "ClosedXML": "[0.104.1, )",
+          "ClosedXML": "[0.104.2, )",
           "GameLogger.Core": "[1.0.0, )",
           "Microsoft.Extensions.Configuration": "[9.0.0, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[9.0.0, )",
