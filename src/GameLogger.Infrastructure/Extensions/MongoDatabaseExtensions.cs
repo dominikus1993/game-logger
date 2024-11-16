@@ -22,6 +22,8 @@ public static class MongoDatabaseExtensions
             classMap.MapIdField(g => g.Id);
             var guidSerializer = new GuidSerializer(GuidRepresentation.Standard);
             classMap.MapField(g => g.Id).SetSerializer(guidSerializer);
+            classMap.MapField(x => x.StartDate).SetSerializer(DateOnlySerializer.Instance);
+            classMap.MapField(x => x.FinishDate).SetSerializer(new NullableSerializer<DateOnly>(DateOnlySerializer.Instance));
             classMap.AutoMap();
         });
     }

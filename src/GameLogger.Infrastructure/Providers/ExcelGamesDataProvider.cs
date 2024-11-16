@@ -40,6 +40,7 @@ public sealed class ExcelGamesDataProvider : IGamesDataProvider
             var startDate = row.Cell(4);
             var endDate = row.Cell(5);
             var playTime = row.Cell(6);
+            var notes = row.Cell(7);
 
             var titleStr = title.GetString();
             if (string.IsNullOrEmpty(titleStr))
@@ -55,7 +56,8 @@ public sealed class ExcelGamesDataProvider : IGamesDataProvider
                 Platform = platform.GetString(),
                 StartDate = GetDate(startDate) ?? throw new InvalidOperationException("Start date is required"),
                 FinishDate = GetDate(endDate),
-                HoursPlayed = playTime.GetValue<ushort?>()
+                HoursPlayed = playTime.GetValue<ushort?>(),
+                Notes = notes.GetString(),
             };
         }
         
