@@ -53,8 +53,17 @@ else
     protected override async Task OnInitializedAsync()
     {
         var result = await GetGamesUseCase.Execute(new GetGamesQuery(1, 12));
-        games = result is null or { Count: 0 } ? [] : result.ToList();
-    }
+        if (result is null or { Count: 0 })
+        {
+            Logger.LogWarning("No games found");
+            games = [];
+        }
+        else
+        {
+            games = result.ToList();
+        }
+
+}
 
     private async Task DeleteGame(Game game)
     {
