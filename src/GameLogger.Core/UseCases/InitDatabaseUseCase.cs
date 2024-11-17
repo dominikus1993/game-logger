@@ -23,6 +23,12 @@ public sealed class InitDatabaseUseCase
         }
         
         var games = await _gamesDataProvider.Provide(cancellationToken).ToArrayAsync(cancellationToken: cancellationToken);
+
+        if (games is {Length: 0})
+        {
+            return;
+        }
+        
         foreach (var game in games)
         {
             var result = await _gamesLogsRepository.WriteGame(game, cancellationToken);
