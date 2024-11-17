@@ -3,6 +3,8 @@
 @using GameLogger.Core.Repositories
 @using GameLogger.Core.UseCases
 @inject GetGamesUseCase GetGamesUseCase
+@inject DeleteGameUseCase DeleteGameUseCase
+@inject ILogger<Games> Logger
 @rendermode InteractiveServer
 
 <PageTitle>Games</PageTitle>
@@ -26,22 +28,46 @@ else
             <th aria-label="Temperature in Farenheit">End Date</th>
             <th>Rating</th>
             <th>Hours Played</th>
+            <th>Delete</th>
         </tr>
         </thead>
         <tbody>
         @foreach (var game in games)
         {
-            <GameLogger.Web.Components.Games.Game Data="game"/>
+            <tr>
+                <td>@game.Title</td>
+                <td>@game.StartDate</td>
+                <td>@game.FinishDate</td>
+                <td>@game.Rating</td>
+                <td>@game.HoursPlayed</td>
+                <td><button @onclick="() => DeleteGame(game)">Usun gre</button></td>
+            </tr>
         }
         </tbody>
     </table>
 }
 
 @code {
-    private IReadOnlyList<Game>? games;
+    private List<Game>? games;
+
     protected override async Task OnInitializedAsync()
     {
-       var result = await GetGamesUseCase.Execute(new GetGamesQuery(1, 12));
-       games = result;
+        var result = await GetGamesUseCase.Execute(new GetGamesQuery(1, 12));
+        games = result is null or { Count: 0 } ? [] : result.ToList();
     }
+
+    private async Task DeleteGame(Game game)
+    {
+        var result = await DeleteGameUseCase.Execute(game.Id);
+
+        if (result.IsSuccess)
+        {
+            games?.Remove(game);
+        }
+        else
+        {
+            Logger.LogError(result.ErrorValue, "Failed to delete game: {GameId}", game.Id);
+        }
+    }
+
 }

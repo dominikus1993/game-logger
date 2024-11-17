@@ -11,6 +11,7 @@ public static class Setup
     {
         services.AddScoped<UseCases.GetGamesUseCase>();
         services.AddScoped<InitDatabaseUseCase>();
+        services.AddScoped<DeleteGameUseCase>();
         return services;
     }
 
