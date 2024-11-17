@@ -23,7 +23,7 @@ public sealed class MongoGamesLogsRepository : IGamesLogsRepository
         var limit = query.PageSize;
         var skip = query.PageSize * (query.Page - 1);
         var result = await _games.Find(FilterDefinition<Game>.Empty)
-            .SortBy(x => x.StartDate)
+            .SortByDescending(x => x.StartDate)
             .Skip((int)skip)
             .Limit(limit)
             .ToListAsync(cancellationToken);
