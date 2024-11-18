@@ -1,5 +1,7 @@
 using GameLogger.Core.Repositories;
 using GameLogger.Core.UseCases;
+using GameLogger.Core.Validators;
+using GameLogger.Core.Validators.Abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,8 @@ public static class Setup
         services.AddScoped<UseCases.GetGamesUseCase>();
         services.AddScoped<InitDatabaseUseCase>();
         services.AddScoped<DeleteGameUseCase>();
+        services.AddScoped<IValidator<AddGameRequest>, AddGameRequestValidator>();
+        services.AddScoped<AddGameUseCase>();
         return services;
     }
 
