@@ -7,6 +7,7 @@ public sealed class AddGameRequestValidator : IValidator<AddGameRequest>
 {
     public ValueTask<ValidationResult> Validate(AddGameRequest entity)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         if (string.IsNullOrWhiteSpace(entity.Title))
         {
             return ValueTask.FromResult(new ValidationResult
