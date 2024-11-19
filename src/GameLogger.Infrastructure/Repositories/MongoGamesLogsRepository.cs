@@ -8,7 +8,6 @@ namespace GameLogger.Infrastructure.Repositories;
 
 public sealed class MongoGamesLogsRepository : IGamesLogsRepository
 {
-    private const string MongoCollectionName = "games";
     private readonly IMongoDatabase _mongoDatabase;
     private readonly IMongoCollection<Game> _games;
 

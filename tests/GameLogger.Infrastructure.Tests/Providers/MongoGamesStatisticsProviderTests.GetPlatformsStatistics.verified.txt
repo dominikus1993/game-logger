@@ -1,0 +1,14 @@
+﻿[
+  {
+    Platform: PC,
+    GamesCount: 1
+  },
+  {
+    Platform: XSX,
+    GamesCount: 1
+  },
+  {
+    Platform: Switch,
+    GamesCount: 1
+  }
+]
