@@ -20,7 +20,7 @@ public sealed class MongoGamesStatisticsProvider : IGamesStatisticsProvider
     
     public async Task<Result<IReadOnlyList<PlatformStatistics>>> GetPlatformsStatistics(CancellationToken cancellationToken = default)
     {
-        var query = _games.AsQueryable().GroupBy(x => x.Platform).Select(x => new PlatformStatistics() { Platform = x.Key, GamesCount = x.Count(), AvgHoursPlayed = x.Average(g => g.HoursPlayed)});
+        var query = _games.AsQueryable().GroupBy(x => x.Platform).Select(x => new PlatformStatistics() { Platform = x.Key, GamesCount = x.Count(), AvgHoursPlayed = x.Average(g => g.HoursPlayed), AvgRating = x.Average(g => g.Rating)});
 
         var result = await query.ToListAsync(cancellationToken: cancellationToken);
         

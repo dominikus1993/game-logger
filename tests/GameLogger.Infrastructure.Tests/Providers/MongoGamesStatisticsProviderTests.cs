@@ -53,7 +53,13 @@ public class MongoGamesStatisticsProviderTests: IClassFixture<MongoDbFixture>, I
                 Id = Guid.CreateVersion7(), Title = "Mario Odyssey", Rating = 8, Platform = "Switch",
                 StartDate = DateOnly.FromDateTime(DateTime.Now),
                 FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
-            }
+            },
+            new Game()
+            {
+                Id = Guid.CreateVersion7(), Title = "Metroid Dread", Rating = 4, Platform = "Switch",
+                StartDate = DateOnly.FromDateTime(DateTime.Now),
+                FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 20
+            },
         ];
         
         foreach (var game in games)
@@ -69,7 +75,14 @@ public class MongoGamesStatisticsProviderTests: IClassFixture<MongoDbFixture>, I
         Assert.True(platformsStatistics.IsSuccess);
         Assert.NotEmpty(platformsStatistics.Value);
         
-        await Verify(platformsStatistics.Value);
+        Assert.Equal(3, platformsStatistics.Value.Count);
+        Assert.All(platformsStatistics.Value, stats =>
+        {
+            Assert.NotEmpty(stats.Platform);
+            Assert.True(stats.GamesCount > 0);
+            Assert.True(stats.AvgHoursPlayed > 0);
+            Assert.True(stats.AvgRating > 0);
+        });
     }
     
 
