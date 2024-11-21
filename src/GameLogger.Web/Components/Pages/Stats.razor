@@ -1,0 +1,62 @@
+@page "/stats"
+@using BlazorBootstrap
+@using GameLogger.Core.Data
+@using GameLogger.Core.Providers
+@using GameLogger.Core.Repositories
+@using GameLogger.Core.UseCases
+@inject GetPlatformStatisticsUseCase GetPlatformStatisticsUseCase
+@inject ILogger<Stats> Logger
+@rendermode InteractiveServer
+
+<PageTitle>Games</PageTitle>
+
+<h1>Games</h1>
+
+<PieChart @ref="pieChart" Width="500" />
+
+@code {
+    private IReadOnlyList<PlatformStatistics>? stats;
+    private PieChart pieChart = default!;
+    private ChartData chartData = default!;
+    private PieChartOptions pieChartOptions = default!;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await GetPlatformStatisticsUseCase.Execute();
+        stats = result is { IsSuccess: true, Value.Count: > 0 } ? result.Value : [];
+        chartData = GetChartData();
+        pieChartOptions = new PieChartOptions()
+        {
+            Responsive = true,
+        };
+        pieChartOptions.Plugins.Title!.Text = "Platofrmy gofziny grania";
+        pieChartOptions.Plugins.Title.Display = true;
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await pieChart.InitializeAsync(chartData, pieChartOptions);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+
+    private ChartData GetChartData()
+    {
+        if (stats is null or { Count: 0})
+        {
+            return new ChartData();
+        }
+
+        var data = stats.Select(x => (x.Platform, x.AvgRating)).ToArray();
+        var dataSets = data.Select(x => new PieChartDataset() { Data = [x.AvgRating], Label = x.Platform }).ToList<IChartDataset>();
+        var res = new ChartData()
+        {
+            Labels = data.Select(x => x.Platform).ToList(),
+            Datasets = dataSets,
+        };
+        return res;
+    }
+}

@@ -12,6 +12,7 @@ public static class Setup
     public static IServiceCollection AddCore(this IServiceCollection services)
     {
         services.AddScoped<UseCases.GetGamesUseCase>();
+        services.AddScoped<GetPlatformStatisticsUseCase>();
         services.AddScoped<InitDatabaseUseCase>();
         services.AddScoped<DeleteGameUseCase>();
         services.AddScoped<IValidator<AddGameRequest>, AddGameRequestValidator>();

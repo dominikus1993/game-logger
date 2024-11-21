@@ -17,6 +17,7 @@ public static class Setup
         services.AddScoped<IGamesDataProvider, ExcelGamesDataProvider>();
         services.AddMongoDb(configuration);
         services.AddScoped<IGamesLogsRepository, MongoGamesLogsRepository>();
+        services.AddScoped<IGamesStatisticsProvider, MongoGamesStatisticsProvider>();
         return services;
     }
     
