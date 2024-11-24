@@ -29,6 +29,12 @@
     {
         var result = await GetPlatformStatisticsUseCase.Execute();
         stats = result is { IsSuccess: true, Value.Count: > 0 } ? result.Value : [];
+        InitRatingsChart();
+        InitHoursChart();
+    }
+
+    private void InitRatingsChart()
+    {
         ratingChartData = GetRatingChartData();
         ratingPieChartOptions = new PieChartOptions()
         {
@@ -36,6 +42,10 @@
         };
         ratingPieChartOptions.Plugins.Title!.Text = "Platofrmy per avg rating";
         ratingPieChartOptions.Plugins.Title.Display = true;
+    }
+
+    private void InitHoursChart()
+    {
         hoursPieChartOptions = new PieChartOptions()
         {
             Responsive = true,
@@ -44,7 +54,7 @@
         hoursPieChartOptions.Plugins.Title.Display = true;
         hoursChartData = GetHoursChartData();
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
