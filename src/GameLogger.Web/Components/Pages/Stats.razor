@@ -12,38 +12,51 @@
 
 <h1>Games</h1>
 
-<PieChart @ref="pieChart" Width="500" />
+<PieChart @ref="ratingChart" Width="500" />
+<PieChart @ref="hoursChart" Width="500" />
 
 @code {
     private IReadOnlyList<PlatformStatistics>? stats;
-    private PieChart pieChart = default!;
-    private ChartData chartData = default!;
-    private PieChartOptions pieChartOptions = default!;
+    private PieChart ratingChart = default!;
+    private ChartData ratingChartData = default!;
+    private PieChartOptions ratingPieChartOptions = default!;
+    
+    private PieChart hoursChart = default!;
+    private ChartData hoursChartData = default!;
+    private PieChartOptions hoursPieChartOptions = default!;
     
     protected override async Task OnInitializedAsync()
     {
         var result = await GetPlatformStatisticsUseCase.Execute();
         stats = result is { IsSuccess: true, Value.Count: > 0 } ? result.Value : [];
-        chartData = GetChartData();
-        pieChartOptions = new PieChartOptions()
+        ratingChartData = GetRatingChartData();
+        ratingPieChartOptions = new PieChartOptions()
         {
             Responsive = true,
         };
-        pieChartOptions.Plugins.Title!.Text = "Platofrmy gofziny grania";
-        pieChartOptions.Plugins.Title.Display = true;
+        ratingPieChartOptions.Plugins.Title!.Text = "Platofrmy per avg rating";
+        ratingPieChartOptions.Plugins.Title.Display = true;
+        hoursPieChartOptions = new PieChartOptions()
+        {
+            Responsive = true,
+        };
+        hoursPieChartOptions.Plugins.Title!.Text = "Platofrmy godziny";
+        hoursPieChartOptions.Plugins.Title.Display = true;
+        hoursChartData = GetHoursChartData();
     }
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await pieChart.InitializeAsync(chartData, pieChartOptions);
+            await ratingChart.InitializeAsync(ratingChartData, ratingPieChartOptions);
+            await hoursChart.InitializeAsync(hoursChartData, hoursPieChartOptions);
         }
         await base.OnAfterRenderAsync(firstRender);
     }
 
 
-    private ChartData GetChartData()
+    private ChartData GetRatingChartData()
     {
         if (stats is null or { Count: 0})
         {
@@ -51,11 +64,26 @@
         }
 
         var data = stats.Select(x => (x.Platform, x.AvgRating)).ToArray();
-        var dataSets = data.Select(x => new PieChartDataset() { Data = [x.AvgRating], Label = x.Platform }).ToList<IChartDataset>();
         var res = new ChartData()
         {
             Labels = data.Select(x => x.Platform).ToList(),
-            Datasets = dataSets,
+            Datasets = [new PieChartDataset() { Data = data.Select(x => x.AvgRating).ToList(), Label = "Platforma" }],
+        };
+        return res;
+    }
+    
+    private ChartData GetHoursChartData()
+    {
+        if (stats is null or { Count: 0})
+        {
+            return new ChartData();
+        }
+
+        var data = stats.Select(x => (x.Platform, x.AvgHoursPlayed)).ToArray();
+        var res = new ChartData()
+        {
+            Labels = data.Select(x => x.Platform).ToList(),
+            Datasets = [new PieChartDataset() { Data = data.Select(x => x.AvgHoursPlayed).ToList(), Label = "Platforma" }],
         };
         return res;
     }
