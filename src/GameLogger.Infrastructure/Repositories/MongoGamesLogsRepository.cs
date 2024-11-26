@@ -43,6 +43,17 @@ public sealed class MongoGamesLogsRepository : IGamesLogsRepository
         }
     }
 
+    public async Task<Result<Unit>> UpdateGame(Game game, CancellationToken cancellationToken = default)
+    {
+        var filter = Builders<Game>.Filter.Eq(g => g.Id, game.Id);
+        await _games.FindOneAndReplaceAsync(filter, game, new FindOneAndReplaceOptions<Game, Game>()
+        {
+            IsUpsert = true,
+        }, cancellationToken);
+        
+        return Result.UnitResult;
+    }
+
     public async Task<Result<Unit>> DeleteGame(Guid id, CancellationToken cancellationToken = default)
     {
         var filter = Builders<Game>.Filter.Eq(g => g.Id, id);

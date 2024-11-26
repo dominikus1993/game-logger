@@ -29,7 +29,8 @@ public static class Result
     {
         return new Result<T>(exception);
     }
-
+    
+    
     public static readonly Result<Unit> UnitResult = new(Unit.Value);
 
     public static Result<B> ToError<A, B>(this Result<A> res)

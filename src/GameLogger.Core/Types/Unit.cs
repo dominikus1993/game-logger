@@ -1,75 +1,26 @@
 namespace GameLogger.Core.Types;
 
-public readonly struct Unit : IEquatable<Unit>, IComparable<Unit>
+public readonly struct Unit : IEquatable<Unit>, IComparable<Unit>, IComparable
 {
-    public static readonly Unit Value = new();
+    private static readonly Unit _value = new();
 
-    [System.Diagnostics.Contracts.Pure]
-    public override int GetHashCode() =>
-        0;
+    public static ref readonly Unit Value => ref _value;
 
-    [System.Diagnostics.Contracts.Pure]
-    public override bool Equals(object? obj) =>
-        obj is Unit;
+    public static ValueTask<Unit> ValueTask => new ValueTask<Unit>(_value);
 
-    [System.Diagnostics.Contracts.Pure]
-    public override string ToString() =>
-        "()";
+    public int CompareTo(Unit other) => 0;
 
-    [System.Diagnostics.Contracts.Pure]
-    public bool Equals(Unit other) =>
-        true;
+    int IComparable.CompareTo(object? obj) => 0;
 
-    [System.Diagnostics.Contracts.Pure]
-    public static bool operator ==(Unit lhs, Unit rhs) =>
-        true;
+    public override int GetHashCode() => 0;
 
-    [System.Diagnostics.Contracts.Pure]
-    public static bool operator !=(Unit lhs, Unit rhs) =>
-        false;
+    public bool Equals(Unit other) => true;
 
-    [System.Diagnostics.Contracts.Pure]
-    public static bool operator >(Unit lhs, Unit rhs) =>
-        false;
+    public override bool Equals(object? obj) => obj is Unit;
 
-    [System.Diagnostics.Contracts.Pure]
-    public static bool operator >=(Unit lhs, Unit rhs) =>
-        true;
+    public static bool operator ==(Unit _, Unit __) => true;
 
-    [System.Diagnostics.Contracts.Pure]
-    public static bool operator <(Unit lhs, Unit rhs) =>
-        false;
+    public static bool operator !=(Unit _, Unit __) => false;
 
-    [System.Diagnostics.Contracts.Pure]
-    public static bool operator <=(Unit lhs, Unit rhs) =>
-        true;
-
-    /// <summary>
-    /// Provide an alternative value to unit
-    /// </summary>
-    /// <typeparam name="T">Alternative value type</typeparam>
-    /// <param name="anything">Alternative value</param>
-    /// <returns>Alternative value</returns>
-    [System.Diagnostics.Contracts.Pure]
-    public T Return<T>(T anything) => anything;
-
-    /// <summary>
-    /// Provide an alternative value to unit
-    /// </summary>
-    /// <typeparam name="T">Alternative value type</typeparam>
-    /// <param name="anything">Alternative value</param>
-    /// <returns>Alternative value</returns>
-    [System.Diagnostics.Contracts.Pure]
-    public T Return<T>(Func<T> anything) => anything();
-
-    /// <summary>
-    /// Always equal
-    /// </summary>
-    [System.Diagnostics.Contracts.Pure]
-    public int CompareTo(Unit other) =>
-        0;
-
-    [System.Diagnostics.Contracts.Pure]
-    public static Unit operator +(Unit a, Unit b) =>
-        Value;
+    public override string ToString() => "()";
 }
