@@ -120,14 +120,26 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
         
         // Act
 
-        game.Rating = 7;
-        var deleteResult = await _repository.UpdateGame(game.Id);
+        var newGame = new Game()
+        {
+            Id = game.Id,
+            HoursPlayed = 2112,
+            Rating = 555,
+            StartDate = game.StartDate,
+            FinishDate = game.FinishDate,
+            Platform = game.Platform,
+            Title = game.Title,
+        };
+        
+        var deleteResult = await _repository.UpdateGame(newGame);
         Assert.True(deleteResult.IsSuccess);
         
         var games = await _repository.GetGames(new GetGamesQuery(1, 10));
         
-        Assert.Empty(games);
-        
+        Assert.NotEmpty(games);
+        Assert.Single(games);
+        var gameFromDb = games[0];
+        Assert.Equivalent(newGame, gameFromDb);
     }
     
     [Fact]

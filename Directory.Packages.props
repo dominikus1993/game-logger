@@ -1,5 +1,6 @@
 <Project>
   <ItemGroup>
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.0.0"/>
     <PackageVersion Include="Blazor.Bootstrap" Version="3.2.0" />
     <PackageVersion Include="ClosedXML" Version="0.104.2" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
