@@ -101,6 +101,62 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
         Assert.Single(games);
         
     }
+    
+    
+    [Fact]
+    public async Task UpdateGameWhenExists()
+    {
+        // Arrange
+
+        var game = new Game()
+        {
+            Id = Guid.CreateVersion7(), Title = "Cyberpunk 2077", Rating = 8, Platform = "PC",
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
+        };
+        
+        var writeResult = await _repository.WriteGame(game);
+        Assert.True(writeResult.IsSuccess);
+        
+        // Act
+
+        game.Rating = 7;
+        var deleteResult = await _repository.UpdateGame(game.Id);
+        Assert.True(deleteResult.IsSuccess);
+        
+        var games = await _repository.GetGames(new GetGamesQuery(1, 10));
+        
+        Assert.Empty(games);
+        
+    }
+    
+    [Fact]
+    public async Task UpdateGameWhenNoExists()
+    {
+        // Arrange
+
+        var game = new Game()
+        {
+            Id = Guid.CreateVersion7(), Title = "Cyberpunk 2077", Rating = 8, Platform = "PC",
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
+        };
+        
+        var writeResult = await _repository.UpdateGame(game);
+        Assert.True(writeResult.IsSuccess);
+        
+        // Act
+        
+        var deleteResult = await _repository.DeleteGame(Guid.CreateVersion7());
+        Assert.False(deleteResult.IsSuccess);
+        Assert.IsType<InvalidOperationException>(deleteResult.ErrorValue);
+        
+        var games = await _repository.GetGames(new GetGamesQuery(1, 10));
+        
+        Assert.NotEmpty(games);
+        Assert.Single(games);
+        
+    }
 
     public Task InitializeAsync()
     {
