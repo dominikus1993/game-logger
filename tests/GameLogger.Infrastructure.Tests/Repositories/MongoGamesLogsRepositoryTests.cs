@@ -6,7 +6,7 @@ using GameLogger.Infrastructure.Tests.Fixture;
 
 namespace GameLogger.Infrastructure.Tests.Repositories;
 
-public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsyncLifetime
+public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IDisposable
 {
     private readonly IGamesLogsRepository _repository;
     private readonly MongoDbFixture _fixture;
@@ -20,7 +20,7 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
     [Fact]
     public async Task GetGamesWhenCollectionIsEmpty()
     {
-        var games = await _repository.GetGames(new GetGamesQuery(1, 10));
+        var games = await _repository.GetGames(new GetGamesQuery(1, 10), TestContext.Current.CancellationToken);
         
         Assert.Empty(games);
     }
@@ -37,10 +37,10 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
             FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
         };
         
-        var writeResult = await _repository.WriteGame(game);
+        var writeResult = await _repository.WriteGame(game, TestContext.Current.CancellationToken);
         Assert.True(writeResult.IsSuccess);
         
-        var games = await _repository.GetGames(new GetGamesQuery(1, 10));
+        var games = await _repository.GetGames(new GetGamesQuery(1, 10), TestContext.Current.CancellationToken);
         
         Assert.NotEmpty(games);
         Assert.Single(games);
@@ -60,15 +60,15 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
             FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
         };
         
-        var writeResult = await _repository.WriteGame(game);
+        var writeResult = await _repository.WriteGame(game, TestContext.Current.CancellationToken);
         Assert.True(writeResult.IsSuccess);
         
         // Act
         
-        var deleteResult = await _repository.DeleteGame(game.Id);
+        var deleteResult = await _repository.DeleteGame(game.Id, TestContext.Current.CancellationToken);
         Assert.True(deleteResult.IsSuccess);
         
-        var games = await _repository.GetGames(new GetGamesQuery(1, 10));
+        var games = await _repository.GetGames(new GetGamesQuery(1, 10), TestContext.Current.CancellationToken);
         
         Assert.Empty(games);
         
@@ -86,16 +86,16 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
             FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
         };
         
-        var writeResult = await _repository.WriteGame(game);
+        var writeResult = await _repository.WriteGame(game, TestContext.Current.CancellationToken);
         Assert.True(writeResult.IsSuccess);
         
         // Act
         
-        var deleteResult = await _repository.DeleteGame(Guid.CreateVersion7());
+        var deleteResult = await _repository.DeleteGame(Guid.CreateVersion7(), TestContext.Current.CancellationToken);
         Assert.False(deleteResult.IsSuccess);
         Assert.IsType<InvalidOperationException>(deleteResult.ErrorValue);
         
-        var games = await _repository.GetGames(new GetGamesQuery(1, 10));
+        var games = await _repository.GetGames(new GetGamesQuery(1, 10), TestContext.Current.CancellationToken);
         
         Assert.NotEmpty(games);
         Assert.Single(games);
@@ -115,7 +115,7 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
             FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
         };
         
-        var writeResult = await _repository.WriteGame(game);
+        var writeResult = await _repository.WriteGame(game, TestContext.Current.CancellationToken);
         Assert.True(writeResult.IsSuccess);
         
         // Act
@@ -131,10 +131,10 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
             Title = game.Title,
         };
         
-        var deleteResult = await _repository.UpdateGame(newGame);
+        var deleteResult = await _repository.UpdateGame(newGame, TestContext.Current.CancellationToken);
         Assert.True(deleteResult.IsSuccess);
         
-        var games = await _repository.GetGames(new GetGamesQuery(1, 10));
+        var games = await _repository.GetGames(new GetGamesQuery(1, 10), TestContext.Current.CancellationToken);
         
         Assert.NotEmpty(games);
         Assert.Single(games);
@@ -154,29 +154,24 @@ public class MongoGamesLogsRepositoryTests : IClassFixture<MongoDbFixture>, IAsy
             FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)), HoursPlayed = 40
         };
         
-        var writeResult = await _repository.UpdateGame(game);
+        var writeResult = await _repository.UpdateGame(game, TestContext.Current.CancellationToken);
         Assert.True(writeResult.IsSuccess);
         
         // Act
         
-        var deleteResult = await _repository.DeleteGame(Guid.CreateVersion7());
+        var deleteResult = await _repository.DeleteGame(Guid.CreateVersion7(), TestContext.Current.CancellationToken);
         Assert.False(deleteResult.IsSuccess);
         Assert.IsType<InvalidOperationException>(deleteResult.ErrorValue);
         
-        var games = await _repository.GetGames(new GetGamesQuery(1, 10));
+        var games = await _repository.GetGames(new GetGamesQuery(1, 10), TestContext.Current.CancellationToken);
         
         Assert.NotEmpty(games);
         Assert.Single(games);
         
     }
 
-    public Task InitializeAsync()
+    public void Dispose()
     {
-        return Task.CompletedTask;
-    }
-
-    public async Task DisposeAsync()
-    {
-        await _fixture.Database.DropCollectionAsync(_fixture.Database.GetGamesCollectionName());
+        _fixture.CleanDatabase();
     }
 }

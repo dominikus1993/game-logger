@@ -8,7 +8,7 @@ using GameLogger.Infrastructure.Tests.Fixture;
 
 namespace GameLogger.Infrastructure.Tests.Providers;
 
-public class MongoGamesStatisticsProviderTests: IClassFixture<MongoDbFixture>, IAsyncLifetime
+public sealed class MongoGamesStatisticsProviderTests: IClassFixture<MongoDbFixture>, IDisposable
 {
     private readonly IGamesStatisticsProvider _repository;
     private readonly IGamesLogsRepository _gamesLogsRepository;
@@ -24,7 +24,7 @@ public class MongoGamesStatisticsProviderTests: IClassFixture<MongoDbFixture>, I
     [Fact]
     public async Task GetPlatformsStatisticsWhenCollectionIsEmpty()
     {
-        var platformsStatistics = await _repository.GetPlatformsStatistics();
+        var platformsStatistics = await _repository.GetPlatformsStatistics(TestContext.Current.CancellationToken);
         
         Assert.True(platformsStatistics.IsSuccess);
         Assert.Empty(platformsStatistics.Value);
@@ -64,12 +64,12 @@ public class MongoGamesStatisticsProviderTests: IClassFixture<MongoDbFixture>, I
         
         foreach (var game in games)
         {
-            var writeResult = await _gamesLogsRepository.WriteGame(game);
+            var writeResult = await _gamesLogsRepository.WriteGame(game, TestContext.Current.CancellationToken);
             Assert.True(writeResult.IsSuccess);
         }
         
         // Act
-        var platformsStatistics = await _repository.GetPlatformsStatistics();
+        var platformsStatistics = await _repository.GetPlatformsStatistics(TestContext.Current.CancellationToken);
         
         // Assert
         Assert.True(platformsStatistics.IsSuccess);
@@ -85,14 +85,8 @@ public class MongoGamesStatisticsProviderTests: IClassFixture<MongoDbFixture>, I
         });
     }
     
-
-    public Task InitializeAsync()
+    public void Dispose()
     {
-        return Task.CompletedTask;
-    }
-
-    public async Task DisposeAsync()
-    {
-        await _fixture.Database.DropCollectionAsync(_fixture.Database.GetGamesCollectionName());
+        _fixture.CleanDatabase();
     }
 }
