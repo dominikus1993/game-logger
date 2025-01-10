@@ -45,7 +45,7 @@ public sealed class MongoGamesLogsRepository : IGamesLogsRepository
 
     public async Task<Result<Unit>> UpdateGame(Game game, CancellationToken cancellationToken = default)
     {
-        var filter = Builders<Game>.Filter.Eq(g => g.Id, game.Id);
+        var filter = IdFilter(game.Id);
         await _games.FindOneAndReplaceAsync(filter, game, new FindOneAndReplaceOptions<Game, Game>()
         {
             IsUpsert = true,
@@ -56,7 +56,7 @@ public sealed class MongoGamesLogsRepository : IGamesLogsRepository
 
     public async Task<Result<Unit>> DeleteGame(Guid id, CancellationToken cancellationToken = default)
     {
-        var filter = Builders<Game>.Filter.Eq(g => g.Id, id);
+        var filter = IdFilter(id);
         var result = await _games.DeleteOneAsync(filter, cancellationToken: cancellationToken);
         
         if (result.DeletedCount == 0)
@@ -66,4 +66,6 @@ public sealed class MongoGamesLogsRepository : IGamesLogsRepository
         
         return Result.UnitResult;
     }
+    
+    private static FilterDefinition<Game> IdFilter(Guid id) => Builders<Game>.Filter.Eq(g => g.Id, id);
 }

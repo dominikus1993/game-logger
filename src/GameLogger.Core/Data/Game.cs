@@ -1,6 +1,6 @@
 namespace GameLogger.Core.Data;
 
-public sealed class Game
+public sealed class Game : IEquatable<Game>
 {
     public Guid Id { get; init; }
     public string Title { get; init; }
@@ -11,7 +11,7 @@ public sealed class Game
     public ushort? Rating { get; init; }
     public string? Notes { get; init; }
 
-    private bool Equals(Game other)
+    public bool Equals(Game other)
     {
         return Id.Equals(other.Id);
     }
