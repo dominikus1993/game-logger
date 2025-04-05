@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogger.Core.Tests", "te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogger.Infrastructure.Tests", "tests\GameLogger.Infrastructure.Tests\GameLogger.Infrastructure.Tests.csproj", "{193E0043-FC06-46BE-8D5D-7D73453EBC7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogger.AppHost", "src\GameLogger.AppHost\GameLogger.AppHost.csproj", "{60F73CC5-1BA8-41BC-97DC-C1DFC0747961}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,10 +46,6 @@ Global
 		{193E0043-FC06-46BE-8D5D-7D73453EBC7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{193E0043-FC06-46BE-8D5D-7D73453EBC7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{193E0043-FC06-46BE-8D5D-7D73453EBC7A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{60F73CC5-1BA8-41BC-97DC-C1DFC0747961}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{60F73CC5-1BA8-41BC-97DC-C1DFC0747961}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{60F73CC5-1BA8-41BC-97DC-C1DFC0747961}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{60F73CC5-1BA8-41BC-97DC-C1DFC0747961}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{27849E0C-164F-4BA3-B7C6-17166B933A24} = {43CA735F-72BE-4259-A6B8-B2D0A841C78F}
@@ -59,6 +53,5 @@ Global
 		{8D51A760-1C33-4A03-92B9-6951961A8EC9} = {43CA735F-72BE-4259-A6B8-B2D0A841C78F}
 		{B1E217B4-02AB-4D50-A5EB-1A6FE8DF597D} = {AF694A31-CAF6-4851-B4F2-46108EE2E85F}
 		{193E0043-FC06-46BE-8D5D-7D73453EBC7A} = {AF694A31-CAF6-4851-B4F2-46108EE2E85F}
-		{60F73CC5-1BA8-41BC-97DC-C1DFC0747961} = {43CA735F-72BE-4259-A6B8-B2D0A841C78F}
 	EndGlobalSection
 EndGlobal
