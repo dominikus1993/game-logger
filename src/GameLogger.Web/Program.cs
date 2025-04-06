@@ -3,10 +3,11 @@ using GameLogger.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAntiforgery();
 builder.Services.AddCore();
 builder.Services.AddInfrastructure(builder.Configuration);
 var app = builder.Build();
-await app.Init();
+// await app.Init();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
