@@ -16,8 +16,8 @@ public static class Setup
         services.AddSingleton(configuration.GetRequiredSection("Excel").Get<ExcelConfiguration>()!);
         services.AddScoped<IGamesDataProvider, ExcelGamesDataProvider>();
         services.AddMongoDb(configuration);
-        services.AddScoped<IGamesLogsRepository, MongoGamesLogsRepository>();
-        services.AddScoped<IGamesStatisticsProvider, MongoGamesStatisticsProvider>();
+        services.AddScoped<IGamesLogsRepository, FakeGamesLogsRepository>();
+        services.AddScoped<IGamesStatisticsProvider, FakeGamesStatisticsProvider>();
         return services;
     }
     
