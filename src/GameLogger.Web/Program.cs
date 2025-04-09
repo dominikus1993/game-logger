@@ -45,4 +45,3 @@ app.MapGet("/games", async ([FromServices] GetGamesUseCase useCase, Cancellation
 
 await app.RunAsync();
 
-
