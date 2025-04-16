@@ -1,6 +1,0 @@
-@baseUrl = http://localhost:5069
-
-GET {{baseUrl}}/games
-Accept: application/json
-
-###
