@@ -19,6 +19,7 @@ func NewLoadGamesUseCase(provider service.LoadGamesService, writer repo.GamesWri
 }
 
 func (uc *LoadGamesUseCase) Execute(ctx context.Context) error {
+
 	stream := uc.provider.Load(ctx)
 	var err error
 	for game := range stream {
