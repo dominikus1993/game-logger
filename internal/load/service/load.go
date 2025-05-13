@@ -6,16 +6,18 @@ import (
 	"strconv"
 
 	"github.com/dominikus1993/game-logger/pkg/model"
-	"github.com/xuri/excelize/v2"
+	"github.com/tealeg/xlsx/v3"
 )
 
 type ExcelLoadGamesService struct {
-	path string
+	path      string
+	sheetName string
 }
 
-func NewExcelLoadGamesService(path string) *ExcelLoadGamesService {
+func NewExcelLoadGamesService(path, sheetName string) *ExcelLoadGamesService {
 	return &ExcelLoadGamesService{
-		path: path,
+		path:      path,
+		sheetName: sheetName,
 	}
 }
 
@@ -24,46 +26,37 @@ func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *model.Game {
 
 	go func(ctx context.Context, service *ExcelLoadGamesService) {
 		defer close(games)
-		f, err := excelize.OpenFile(service.path)
+		wb, err := xlsx.OpenFile(service.path)
 		if err != nil {
-			slog.ErrorContext(ctx, "failed to open file", "file", service.path, "error", err)
+			slog.Error("failed to open file", "path", service.path, "error", err)
 			return
 		}
-		defer func() {
-			// Close the spreadsheet.
-			if err := f.Close(); err != nil {
-				slog.ErrorContext(ctx, "failed to close file", "file", service.path, "error", err)
-			}
-		}()
-
-		rows, err := f.GetRows("Arkusz1")
-		if err != nil {
-			slog.ErrorContext(ctx, "failed to get rows", "file", service.path, "error", err)
+		sheet, ok := wb.Sheet[service.sheetName]
+		if !ok {
+			slog.Error("sheet not found", "sheetName", service.sheetName)
 			return
 		}
-
-		for i, row := range rows {
-			if i < 2 {
-				continue
+		err = sheet.ForEachRow(func(row *xlsx.Row) error {
+			if row.GetCell(0) == nil {
+				return nil
 			}
-
-			if len(row) < 6 {
-				slog.ErrorContext(ctx, "invalid row", "file", service.path, "row", i, "data", row)
-				continue
-			}
-			// []string len: 6, cap: 8, ["Ori and the Will of the Wisps","5","Switch","2023-10-01","2023-11-01","25"]
 			game := &model.Game{
 				Id:          generateId(),
-				Title:       row[0],
-				Rating:      parseRating(row[1]),
-				Platform:    row[2],
-				StartDate:   row[3],
-				FinishDate:  row[4],
-				HoursPlayed: parseRating(row[5]),
+				Title:       row.GetCell(0).String(),
+				Rating:      parseRating(row.GetCell(1).String()),
+				Platform:    row.GetCell(2).String(),
+				StartDate:   row.GetCell(3).String(),
+				FinishDate:  row.GetCell(4).String(),
+				HoursPlayed: parseRating(row.GetCell(5).String()),
 			}
 			games <- game
-		}
+			return nil
+		})
 
+		if err != nil {
+			slog.Error("failed to read sheet", "sheetName", service.sheetName, "error", err)
+			return
+		}
 	}(ctx, s)
 
 	return games
@@ -72,14 +65,6 @@ func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *model.Game {
 func generateId() string {
 	return "test"
 }
-
-func stringToPointer(s string) *string {
-	if s == "" {
-		return nil
-	}
-	return &s
-}
-
 func parseRating(rating string) int {
 	if rating == "" {
 		return 0

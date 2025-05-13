@@ -10,7 +10,7 @@ import (
 
 func TestLoadGamesService(t *testing.T) {
 	path := "Games.xlsx"
-	service := NewExcelLoadGamesService(path)
+	service := NewExcelLoadGamesService(path, "Arkusz1")
 
 	assert.NotNil(t, service)
 
