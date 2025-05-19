@@ -19,6 +19,7 @@ func TestLoadGamesService(t *testing.T) {
 	games := channels.ToSlice(channel)
 
 	assert.NotEmpty(t, games)
+	assert.Len(t, games, 52)
 	// []string len: 6, cap: 8, ["Ori and the Will of the Wisps","5","Switch","2023-10-01","2023-11-01","25"]
 	firstGame := games[0]
 	assert.Equal(t, 5, firstGame.Rating)

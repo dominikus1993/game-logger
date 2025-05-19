@@ -37,7 +37,8 @@ func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *model.Game {
 			return
 		}
 		err = sheet.ForEachRow(func(row *xlsx.Row) error {
-			if row.GetCell(0) == nil {
+			title := row.GetCell(0).String()
+			if shouldSkipRow(title) {
 				return nil
 			}
 			game := &model.Game{
@@ -60,6 +61,10 @@ func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *model.Game {
 	}(ctx, s)
 
 	return games
+}
+
+func shouldSkipRow(title string) bool {
+	return title == "" || title == "Lista" || title == "Gra"
 }
 
 func generateId() string {
