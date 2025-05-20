@@ -23,7 +23,7 @@ func (uc *LoadGamesUseCase) Execute(ctx context.Context) error {
 	stream := uc.provider.Load(ctx)
 	var err error
 	for game := range stream {
-		lerr := uc.writer.WriteGame(game)
+		lerr := uc.writer.WriteGame(ctx, game)
 		if err != nil {
 			err = errors.Join(err, fmt.Errorf("failed to write game %s: %w", game.Id, lerr))
 		}
