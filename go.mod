@@ -7,6 +7,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/tealeg/xlsx/v3 v3.3.13
 	github.com/testcontainers/testcontainers-go/modules/mongodb v0.37.0
+	github.com/urfave/cli/v3 v3.3.3
 	go.mongodb.org/mongo-driver v1.17.3
 )
 
@@ -64,7 +65,6 @@ require (
 	github.com/testcontainers/testcontainers-go v0.37.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.15 // indirect
 	github.com/tklauser/numcpus v0.10.0 // indirect
-	github.com/urfave/cli/v3 v3.3.3 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect

@@ -14,13 +14,6 @@ func main() {
 	app := &cli.Command{
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "file-path",
-				Value:    "",
-				Usage:    "file-path",
-				Sources:  cli.EnvVars("FILE_PATH"),
-				Required: true,
-			},
-			&cli.StringFlag{
 				Name:     "mongo-connection-string",
 				Value:    "",
 				Usage:    "mongo-connection-string",
@@ -28,7 +21,22 @@ func main() {
 				Required: true,
 			},
 		},
-		Action: cmd.Parse,
+		Commands: []*cli.Command{
+			{
+				Name:  "parse",
+				Usage: "Parse articles from excel file and save them to MongoDB",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "file-path",
+						Value:    "",
+						Usage:    "file-path",
+						Sources:  cli.EnvVars("FILE_PATH"),
+						Required: true,
+					},
+				},
+				Action: cmd.Parse,
+			},
+		},
 	}
 	sort.Sort(cli.FlagsByName(app.Flags))
 	if err := app.Run(context.Background(), os.Args); err != nil {
