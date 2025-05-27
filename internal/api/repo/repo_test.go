@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"testing"
 
+	writer "github.com/dominikus1993/game-logger/internal/load/repo"
 	"github.com/dominikus1993/game-logger/internal/mongo"
+	"github.com/dominikus1993/game-logger/pkg/api/repo"
 	"github.com/dominikus1993/game-logger/pkg/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go/modules/mongodb"
 )
 
-func TestWriteGame(t *testing.T) {
+func TestLoadGame(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping integration test")
 	}
@@ -36,9 +38,23 @@ func TestWriteGame(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer client.Close(ctx)
-	repo := NewMongoGamesWriter(client)
+	writer := writer.NewMongoGamesWriter(client)
 
-	t.Run("Write article once", func(t *testing.T) {
+	reader := NewMongoGamesReader(client)
+
+	t.Run("Read when no articles exist", func(t *testing.T) {
+		// Act
+		query := repo.LoadGamesQuery{
+			Page: 1,
+			Size: 10,
+		}
+		games, err := reader.LoadGames(ctx, query)
+		// Assert
+		assert.NoError(t, err)
+		assert.Empty(t, games)
+	})
+
+	t.Run("Read when one article exists", func(t *testing.T) {
 		// Act
 		article := model.Game{
 			Id:          "testArticle",
@@ -50,7 +66,17 @@ func TestWriteGame(t *testing.T) {
 			Rating:      5,
 			Notes:       "test notes",
 		}
-		err := repo.WriteGame(ctx, &article)
+		err := writer.WriteGame(ctx, &article)
 		assert.NoError(t, err)
+
+		query := repo.LoadGamesQuery{
+			Page: 1,
+			Size: 10,
+		}
+
+		games, err := reader.LoadGames(ctx, query)
+		assert.NoError(t, err)
+		assert.NotEmpty(t, games)
+		assert.Len(t, games, 1)
 	})
 }

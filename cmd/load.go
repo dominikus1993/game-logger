@@ -6,6 +6,7 @@ import (
 
 	"github.com/dominikus1993/game-logger/internal/load/repo"
 	"github.com/dominikus1993/game-logger/internal/load/service"
+	"github.com/dominikus1993/game-logger/internal/mongo"
 	"github.com/dominikus1993/game-logger/pkg/load/usecase"
 	"github.com/urfave/cli/v3"
 )
@@ -24,7 +25,7 @@ func NewParseArgs(context *cli.Command) *ParseArgs {
 func Parse(ctx context.Context, cmd *cli.Command) error {
 	p := NewParseArgs(cmd)
 	slog.InfoContext(ctx, "Parse Articles And Send It")
-	mongodbClient, err := repo.NewClient(ctx, p.mongoConnectionString, "Games", "games")
+	mongodbClient, err := mongo.NewClient(ctx, p.mongoConnectionString, "Games", "games")
 	if err != nil {
 		slog.ErrorContext(ctx, "can't create mongodb client", "error", err)
 		return cli.Exit("can't create mongodb client", 1)

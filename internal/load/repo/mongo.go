@@ -3,23 +3,25 @@ package repo
 import (
 	"context"
 
+	"github.com/dominikus1993/game-logger/internal/mongo"
 	"github.com/dominikus1993/game-logger/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type MongoGamesWriter struct {
-	client *MongoClient
+	client *mongo.MongoClient
 }
 
-func NewMongoGamesWriter(client *MongoClient) *MongoGamesWriter {
+func NewMongoGamesWriter(client *mongo.MongoClient) *MongoGamesWriter {
 	return &MongoGamesWriter{client: client}
 }
 
 func (w *MongoGamesWriter) WriteGame(ctx context.Context, game *model.Game) error {
 	filter := bson.M{"id": game.Id}
 	model := newMongoGame(game)
-	_, err := w.client.collection.ReplaceOne(ctx, filter, model, options.Replace().SetUpsert(true))
+	col := w.client.GetCollection()
+	_, err := col.ReplaceOne(ctx, filter, model, options.Replace().SetUpsert(true))
 	if err != nil {
 		return err
 	}

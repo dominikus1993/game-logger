@@ -1,4 +1,4 @@
-package repo
+package mongo
 
 import (
 	"context"
@@ -36,6 +36,10 @@ func NewClient(ctx context.Context, connectionString, database, collection strin
 	col := db.Collection(collection)
 
 	return &MongoClient{mongo: client, db: db, collection: col}, nil
+}
+
+func (c *MongoClient) GetCollection() *mongo.Collection {
+	return c.collection
 }
 
 func (c *MongoClient) Close(ctx context.Context) {
