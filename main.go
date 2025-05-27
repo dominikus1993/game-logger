@@ -36,6 +36,12 @@ func main() {
 				},
 				Action: cmd.Parse,
 			},
+			{
+				Name:   "api",
+				Usage:  "Start API server",
+				Flags:  []cli.Flag{},
+				Action: cmd.Api,
+			},
 		},
 	}
 	sort.Sort(cli.FlagsByName(app.Flags))
