@@ -13,4 +13,5 @@ type LoadGamesQuery struct {
 
 type GamesReader interface {
 	LoadGames(ctx context.Context, query LoadGamesQuery) ([]*model.Game, error)
+	Count(ctx context.Context) (int, error)
 }

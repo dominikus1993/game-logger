@@ -63,6 +63,15 @@ func (w *MongoGamesReader) LoadGames(ctx context.Context, query repo.LoadGamesQu
 	return games, nil
 }
 
+func (w *MongoGamesReader) Count(ctx context.Context) (int, error) {
+	col := w.client.GetCollection()
+	count, err := col.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		return 0, err
+	}
+	return int(count), nil
+}
+
 type mongoGame struct {
 	Id          string `bson:"id"`
 	Title       string `bson:"title"`
@@ -72,17 +81,4 @@ type mongoGame struct {
 	HoursPlayed int    `bson:"hours_played,omitempty"`
 	Rating      int    `bson:"rating,omitempty"`
 	Notes       string `bson:"notes,omitempty"`
-}
-
-func newMongoGame(game *model.Game) *mongoGame {
-	return &mongoGame{
-		Id:          game.Id,
-		Title:       game.Title,
-		StartDate:   game.StartDate,
-		FinishDate:  game.FinishDate,
-		Platform:    game.Platform,
-		HoursPlayed: game.HoursPlayed,
-		Rating:      game.Rating,
-		Notes:       game.Notes,
-	}
 }
