@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	github.com/dominikus1993/go-toolkit v0.0.18
+	github.com/goccy/go-json v0.10.5
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.10.0

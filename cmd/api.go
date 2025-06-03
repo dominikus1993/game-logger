@@ -9,6 +9,7 @@ import (
 	"github.com/dominikus1993/game-logger/internal/api/repo"
 	"github.com/dominikus1993/game-logger/internal/mongo"
 	"github.com/dominikus1993/game-logger/pkg/api/usecases"
+	json "github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v3"
 	"github.com/urfave/cli/v3"
 )
@@ -34,7 +35,10 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 	}
 	defer mongodbClient.Close(ctx)
 	loadGamesUseCase := usecases.NewLoadGamesUseCase(repo.NewMongoGamesReader(mongodbClient))
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		JSONEncoder: json.Marshal,
+		JSONDecoder: json.Unmarshal,
+	})
 
 	// Define a route for the GET method on the root path '/'
 	app.Get("/ping", func(c fiber.Ctx) error {
