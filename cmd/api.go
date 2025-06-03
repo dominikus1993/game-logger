@@ -62,7 +62,7 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error while loading games")
 		}
 		if len(res.Games) == 0 {
-			slog.InfoContext(ctx, "No games found")
+			slog.WarnContext(ctx, "No games found")
 			return c.Status(fiber.StatusNotFound).SendString("No games found")
 		}
 

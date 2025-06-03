@@ -92,7 +92,8 @@ func generateId(title string) string {
 	if normalizedTitle == "" {
 		return uuid.NewString()
 	}
-	return uuid.NewSHA1(uuid.NameSpaceDNS, []byte(normalizedTitle)).String()
+	data := normalizedTitle + time.Now().Format(time.RFC3339)
+	return uuid.NewSHA1(uuid.NameSpaceDNS, []byte(data)).String()
 }
 
 func lowercaseAndTirm(s string) string {
