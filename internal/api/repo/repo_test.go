@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	writer "github.com/dominikus1993/game-logger/internal/load/repo"
 	"github.com/dominikus1993/game-logger/internal/mongo"
@@ -52,11 +53,12 @@ func TestCount(t *testing.T) {
 
 	t.Run("Read when one article exists", func(t *testing.T) {
 		// Act
+		now := time.Now()
 		article := model.Game{
 			Id:          "testArticle",
 			Title:       "testArticle",
-			StartDate:   "2023-10-01",
-			FinishDate:  "2023-11-01",
+			StartDate:   now,
+			FinishDate:  &now,
 			Platform:    "Switch",
 			HoursPlayed: 25,
 			Rating:      5,
@@ -115,11 +117,12 @@ func TestLoadGame(t *testing.T) {
 
 	t.Run("Read when one article exists", func(t *testing.T) {
 		// Act
+		now := time.Now()
 		article := model.Game{
 			Id:          "testArticle",
 			Title:       "testArticle",
-			StartDate:   "2023-10-01",
-			FinishDate:  "2023-11-01",
+			StartDate:   now,
+			FinishDate:  &now, // 1 day later
 			Platform:    "Switch",
 			HoursPlayed: 25,
 			Rating:      5,

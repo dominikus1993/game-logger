@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"time"
 
 	"github.com/dominikus1993/game-logger/internal/mongo"
 	"github.com/dominikus1993/game-logger/pkg/model"
@@ -18,7 +19,7 @@ func NewMongoGamesWriter(client *mongo.MongoClient) *MongoGamesWriter {
 }
 
 func (w *MongoGamesWriter) WriteGame(ctx context.Context, game *model.Game) error {
-	filter := bson.M{"id": game.Id}
+	filter := bson.M{"_id": game.Id}
 	model := newMongoGame(game)
 	col := w.client.GetCollection()
 	_, err := col.ReplaceOne(ctx, filter, model, options.Replace().SetUpsert(true))
@@ -29,14 +30,14 @@ func (w *MongoGamesWriter) WriteGame(ctx context.Context, game *model.Game) erro
 }
 
 type mongoGame struct {
-	Id          string `bson:"id"`
-	Title       string `bson:"title"`
-	StartDate   string `bson:"start_date"`
-	FinishDate  string `bson:"finish_date,omitempty"`
-	Platform    string `bson:"platform,omitempty"`
-	HoursPlayed int    `bson:"hours_played,omitempty"`
-	Rating      int    `bson:"rating,omitempty"`
-	Notes       string `bson:"notes,omitempty"`
+	Id          string     `bson:"_id"`
+	Title       string     `bson:"title"`
+	StartDate   time.Time  `bson:"start_date"`
+	FinishDate  *time.Time `bson:"finish_date,omitempty"`
+	Platform    string     `bson:"platform,omitempty"`
+	HoursPlayed int        `bson:"hours_played,omitempty"`
+	Rating      int        `bson:"rating,omitempty"`
+	Notes       string     `bson:"notes,omitempty"`
 }
 
 func newMongoGame(game *model.Game) *mongoGame {

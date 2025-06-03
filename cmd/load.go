@@ -32,7 +32,7 @@ func Parse(ctx context.Context, cmd *cli.Command) error {
 	}
 	defer mongodbClient.Close(ctx)
 	repo := repo.NewMongoGamesWriter(mongodbClient)
-	articlesProvider := service.NewExcelLoadGamesService(p.filePath, "Sheet1")
+	articlesProvider := service.NewExcelLoadGamesService(p.filePath, "Arkusz1")
 
 	usecase := usecase.NewLoadGamesUseCase(articlesProvider, repo)
 

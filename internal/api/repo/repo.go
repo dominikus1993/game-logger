@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"time"
 
 	"github.com/dominikus1993/game-logger/internal/mongo"
 	"github.com/dominikus1993/game-logger/pkg/api/repo"
@@ -73,12 +74,12 @@ func (w *MongoGamesReader) Count(ctx context.Context) (int, error) {
 }
 
 type mongoGame struct {
-	Id          string `bson:"id"`
-	Title       string `bson:"title"`
-	StartDate   string `bson:"start_date"`
-	FinishDate  string `bson:"finish_date,omitempty"`
-	Platform    string `bson:"platform,omitempty"`
-	HoursPlayed int    `bson:"hours_played,omitempty"`
-	Rating      int    `bson:"rating,omitempty"`
-	Notes       string `bson:"notes,omitempty"`
+	Id          string     `bson:"_id"`
+	Title       string     `bson:"title"`
+	StartDate   time.Time  `bson:"start_date"`
+	FinishDate  *time.Time `bson:"finish_date,omitempty"`
+	Platform    string     `bson:"platform,omitempty"`
+	HoursPlayed int        `bson:"hours_played,omitempty"`
+	Rating      int        `bson:"rating,omitempty"`
+	Notes       string     `bson:"notes,omitempty"`
 }

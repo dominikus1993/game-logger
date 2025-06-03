@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/dominikus1993/game-logger/internal/mongo"
 	"github.com/dominikus1993/game-logger/pkg/model"
@@ -40,11 +41,12 @@ func TestWriteGame(t *testing.T) {
 
 	t.Run("Write article once", func(t *testing.T) {
 		// Act
+		now := time.Now()
 		article := model.Game{
 			Id:          "testArticle",
 			Title:       "testArticle",
-			StartDate:   "2023-10-01",
-			FinishDate:  "2023-11-01",
+			StartDate:   now,
+			FinishDate:  &now,
 			Platform:    "Switch",
 			HoursPlayed: 25,
 			Rating:      5,

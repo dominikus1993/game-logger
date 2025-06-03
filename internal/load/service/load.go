@@ -4,8 +4,11 @@ import (
 	"context"
 	"log/slog"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/dominikus1993/game-logger/pkg/model"
+	"github.com/google/uuid"
 	"github.com/tealeg/xlsx/v3"
 )
 
@@ -41,13 +44,26 @@ func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *model.Game {
 			if shouldSkipRow(title) {
 				return nil
 			}
+			startDate, err := time.Parse("2006-01-02", row.GetCell(3).String())
+			if err != nil {
+				return err
+			}
+			finishDate := row.GetCell(4).String()
+			var finishDateTime *time.Time
+			if finishDate != "" {
+				finishDateTimeParsed, err := time.Parse("2006-01-02", finishDate)
+				if err != nil {
+					return err
+				}
+				finishDateTime = &finishDateTimeParsed
+			}
 			game := &model.Game{
-				Id:          generateId(),
-				Title:       row.GetCell(0).String(),
+				Id:          generateId(title),
+				Title:       title,
 				Rating:      parseRating(row.GetCell(1).String()),
 				Platform:    row.GetCell(2).String(),
-				StartDate:   row.GetCell(3).String(),
-				FinishDate:  row.GetCell(4).String(),
+				StartDate:   startDate,
+				FinishDate:  finishDateTime,
 				HoursPlayed: parseRating(row.GetCell(5).String()),
 			}
 			games <- game
@@ -67,9 +83,22 @@ func shouldSkipRow(title string) bool {
 	return title == "" || title == "Lista" || title == "Gra"
 }
 
-func generateId() string {
-	return "test"
+func generateId(title string) string {
+	if title == "" {
+		return uuid.NewString()
+	}
+	normalizedTitle := lowercaseAndTirm(title)
+
+	if normalizedTitle == "" {
+		return uuid.NewString()
+	}
+	return uuid.NewSHA1(uuid.NameSpaceDNS, []byte(normalizedTitle)).String()
 }
+
+func lowercaseAndTirm(s string) string {
+	return strings.ToLower(strings.TrimSpace(s))
+}
+
 func parseRating(rating string) int {
 	if rating == "" {
 		return 0
