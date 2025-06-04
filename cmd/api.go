@@ -100,11 +100,11 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 			return c.Status(fiber.StatusNotFound).SendString("No games found")
 		}
 
-		return c.Status(200).JSON(fiber.Map{
-			"games": res.Games,
-			"page":  pageInt,
-			"limit": limitInt,
-			"total": res.Total,
+		return c.Render("games", fiber.Map{
+			"Games": res.Games,
+			"Page":  pageInt,
+			":imit": limitInt,
+			"Total": res.Total,
 		})
 	})
 
