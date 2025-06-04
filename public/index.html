@@ -23,16 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            {{range .Games}}
-            <tr>
-                <td>{{.Title}}</td>
-                <td>{{.Platform}}</td>
-                <td>{{if .StartDate}}{{.StartDate.Format "2006-01-02"}}{{end}}</td>
-                <td>{{if .FinishDate}}{{.FinishDate.Format "2006-01-02"}}{{end}}</td>
-                <td>{{.Rating}}</td>
-                <td>{{.HoursPlayed}}</td>
-            </tr>
-            {{end}}
+            {{ template "games" . }}
         </tbody>
     </table>
 </body>
