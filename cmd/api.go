@@ -11,6 +11,7 @@ import (
 	"github.com/dominikus1993/game-logger/pkg/api/usecases"
 	json "github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/template/html/v2"
 	"github.com/urfave/cli/v3"
 )
 
@@ -35,14 +36,54 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 	}
 	defer mongodbClient.Close(ctx)
 	loadGamesUseCase := usecases.NewLoadGamesUseCase(repo.NewMongoGamesReader(mongodbClient))
+	engine := html.New("./public", ".html")
 	app := fiber.New(fiber.Config{
 		JSONEncoder: json.Marshal,
 		JSONDecoder: json.Unmarshal,
+		// Pass in Views Template Engine
+		Views: engine,
+
+		// Enables/Disables access to `ctx.Locals()` entries in rendered views
+		// (defaults to false)
+		PassLocalsToViews: false,
 	})
 
 	// Define a route for the GET method on the root path '/'
 	app.Get("/ping", func(c fiber.Ctx) error {
 		return c.SendString("pong")
+	})
+
+	app.Get("/", func(c fiber.Ctx) error {
+		page := c.Query("page", "1")
+		limit := c.Query("limit", "10")
+		pageInt, err := strconv.Atoi(page)
+		if err != nil {
+			slog.ErrorContext(ctx, "Invalid page number", slog.String("page", page), slog.Any("error", err))
+			return c.Status(fiber.StatusBadRequest).SendString("Invalid page number")
+		}
+		limitInt, err := strconv.Atoi(limit)
+		if err != nil {
+			slog.ErrorContext(ctx, "Invalid limit number", slog.String("limit", limit), slog.Any("error", err))
+			return c.Status(fiber.StatusBadRequest).SendString("Invalid limit number")
+		}
+
+		res, err := loadGamesUseCase.Execute(ctx, usecases.LoadGamesQuery{Page: pageInt, Size: limitInt})
+
+		if err != nil {
+			slog.ErrorContext(ctx, "Error while loading games", slog.Any("error", err))
+			return c.Status(fiber.StatusInternalServerError).SendString("Error while loading games")
+		}
+		if len(res.Games) == 0 {
+			slog.WarnContext(ctx, "No games found")
+			return c.Status(fiber.StatusNotFound).SendString("No games found")
+		}
+
+		return c.Render("index", fiber.Map{
+			"Games": res.Games,
+			"Page":  pageInt,
+			"Limit": limitInt,
+			"Total": res.Total,
+		})
 	})
 
 	app.Get("/games", func(c fiber.Ctx) error {
