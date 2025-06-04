@@ -54,19 +54,8 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 	})
 
 	app.Get("/", func(c fiber.Ctx) error {
-		page := c.Query("page", "1")
-		limit := c.Query("limit", "10")
-		pageInt, err := strconv.Atoi(page)
-		if err != nil {
-			slog.ErrorContext(ctx, "Invalid page number", slog.String("page", page), slog.Any("error", err))
-			return c.Status(fiber.StatusBadRequest).SendString("Invalid page number")
-		}
-		limitInt, err := strconv.Atoi(limit)
-		if err != nil {
-			slog.ErrorContext(ctx, "Invalid limit number", slog.String("limit", limit), slog.Any("error", err))
-			return c.Status(fiber.StatusBadRequest).SendString("Invalid limit number")
-		}
-
+		pageInt := 1
+		limitInt := 10
 		res, err := loadGamesUseCase.Execute(ctx, usecases.LoadGamesQuery{Page: pageInt, Size: limitInt})
 
 		if err != nil {
