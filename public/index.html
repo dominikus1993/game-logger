@@ -1,9 +1,39 @@
 <!DOCTYPE html>
-<header>
-      <script src="https://unpkg.com/htmx.org@2.0.4"></script>
-</header>
+<html>
+<head>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <title>Games List</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
 <body>
-    <h1>{{.Total}}</h1>
+    <h1>Total games: {{.Total}}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Platform</th>
+                <th>Start Date</th>
+                <th>Finish Date</th>
+                <th>Rating</th>
+                <th>Hours Played</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Games}}
+            <tr>
+                <td>{{.Title}}</td>
+                <td>{{.Platform}}</td>
+                <td>{{if .StartDate}}{{.StartDate.Format "2006-01-02"}}{{end}}</td>
+                <td>{{if .FinishDate}}{{.FinishDate.Format "2006-01-02"}}{{end}}</td>
+                <td>{{.Rating}}</td>
+                <td>{{.HoursPlayed}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
 </body>
-
 </html>
