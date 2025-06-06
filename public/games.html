@@ -1,5 +1,11 @@
-{{range .Games}}
+{{range $index, $game := .Games}}
+{{if eq $index (sub $.Count 1)}}
+<tr hx-get="/games/?page={{add $.Page 1}}"
+    hx-trigger="revealed"
+    hx-swap="afterend">
+{{else}}
 <tr>
+{{end}}
     <td>{{.Title}}</td>
     <td>{{.Platform}}</td>
     <td>{{if .StartDate}}{{.StartDate.Format "2006-01-02"}}{{end}}</td>

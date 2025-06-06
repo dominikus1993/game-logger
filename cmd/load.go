@@ -24,7 +24,7 @@ func NewParseArgs(context *cli.Command) *ParseArgs {
 
 func Parse(ctx context.Context, cmd *cli.Command) error {
 	p := NewParseArgs(cmd)
-	slog.InfoContext(ctx, "Parse Articles And Send It")
+	slog.InfoContext(ctx, "Parse Games And Save It")
 	mongodbClient, err := mongo.NewClient(ctx, p.mongoConnectionString, "Games", "games")
 	if err != nil {
 		slog.ErrorContext(ctx, "can't create mongodb client", "error", err)

@@ -27,7 +27,7 @@ func NewApiParseArgs(context *cli.Command) *ApiParseArgs {
 }
 
 func Api(ctx context.Context, cmd *cli.Command) error {
-	slog.InfoContext(ctx, "Parse Articles And Send It")
+	slog.InfoContext(ctx, "Run Api Server")
 	p := NewApiParseArgs(cmd)
 	mongodbClient, err := mongo.NewClient(ctx, p.mongoConnectionString, "Games", "games")
 	if err != nil {
@@ -37,6 +37,10 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 	defer mongodbClient.Close(ctx)
 	loadGamesUseCase := usecases.NewLoadGamesUseCase(repo.NewMongoGamesReader(mongodbClient))
 	engine := html.New("./public", ".html")
+
+	// Add helper functions to template engine
+	engine.AddFunc("sub", func(a, b int) int { return a - b })
+	engine.AddFunc("add", func(a, b int) int { return a + b })
 	app := fiber.New(fiber.Config{
 		JSONEncoder: json.Marshal,
 		JSONDecoder: json.Unmarshal,
@@ -71,6 +75,7 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 			"Games": res.Games,
 			"Page":  pageInt,
 			"Limit": limitInt,
+			"Count": len(res.Games),
 			"Total": res.Total,
 		})
 	})
@@ -97,13 +102,20 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 		}
 		if len(res.Games) == 0 {
 			slog.WarnContext(ctx, "No games found")
-			return c.Status(fiber.StatusNotFound).SendString("No games found")
+			return c.Render("games", fiber.Map{
+				"Games": res.Games,
+				"Page":  pageInt,
+				"Limit": limitInt,
+				"Count": len(res.Games),
+				"Total": res.Total,
+			})
 		}
 
 		return c.Render("games", fiber.Map{
 			"Games": res.Games,
 			"Page":  pageInt,
-			":imit": limitInt,
+			"Limit": limitInt,
+			"Count": len(res.Games),
 			"Total": res.Total,
 		})
 	})
