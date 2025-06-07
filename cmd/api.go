@@ -102,13 +102,6 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 		}
 		if len(res.Games) == 0 {
 			slog.WarnContext(ctx, "No games found")
-			return c.Render("games", fiber.Map{
-				"Games": res.Games,
-				"Page":  pageInt,
-				"Limit": limitInt,
-				"Count": len(res.Games),
-				"Total": res.Total,
-			})
 		}
 
 		return c.Render("games", fiber.Map{
