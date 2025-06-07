@@ -22,10 +22,13 @@ func TestLoadGamesService(t *testing.T) {
 	assert.Len(t, games, 52)
 	// []string len: 6, cap: 8, ["Ori and the Will of the Wisps","5","Switch","2023-10-01","2023-11-01","25"]
 	firstGame := games[0]
-	assert.Equal(t, 5, firstGame.Rating)
+	assert.NotNil(t, firstGame)
+	assert.NotNil(t, firstGame.Rating)
+	assert.Equal(t, 5, *firstGame.Rating)
 	assert.Equal(t, "Switch", firstGame.Platform)
 	assert.Equal(t, "2023-10-01", firstGame.StartDate.Format("2006-01-02"))
 	assert.Equal(t, "2023-11-01", firstGame.FinishDate.Format("2006-01-02"))
-	assert.Equal(t, 25, firstGame.HoursPlayed)
+	assert.NotNil(t, firstGame.HoursPlayed)
+	assert.Equal(t, 25, *firstGame.HoursPlayed)
 	assert.Equal(t, "Ori and the Will of the Wisps", firstGame.Title)
 }

@@ -35,8 +35,8 @@ type mongoGame struct {
 	StartDate   time.Time  `bson:"start_date"`
 	FinishDate  *time.Time `bson:"finish_date,omitempty"`
 	Platform    string     `bson:"platform,omitempty"`
-	HoursPlayed int        `bson:"hours_played,omitempty"`
-	Rating      int        `bson:"rating,omitempty"`
+	HoursPlayed *int       `bson:"hours_played,omitempty"`
+	Rating      *int       `bson:"rating,omitempty"`
 	Notes       string     `bson:"notes,omitempty"`
 }
 

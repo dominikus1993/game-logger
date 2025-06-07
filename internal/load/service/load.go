@@ -100,13 +100,13 @@ func lowercaseAndTirm(s string) string {
 	return strings.ToLower(strings.TrimSpace(s))
 }
 
-func parseRating(rating string) int {
+func parseRating(rating string) *int {
 	if rating == "" {
-		return 0
+		return nil
 	}
 	r, err := strconv.Atoi(rating)
 	if err != nil {
-		return 0
+		return nil
 	}
-	return r
+	return &r
 }

@@ -54,14 +54,16 @@ func TestCount(t *testing.T) {
 	t.Run("Read when one article exists", func(t *testing.T) {
 		// Act
 		now := time.Now()
+		hoursPlayed := 25
+		rating := 5
 		article := model.Game{
 			Id:          "testArticle",
 			Title:       "testArticle",
 			StartDate:   now,
 			FinishDate:  &now,
 			Platform:    "Switch",
-			HoursPlayed: 25,
-			Rating:      5,
+			HoursPlayed: &hoursPlayed,
+			Rating:      &rating,
 			Notes:       "test notes",
 		}
 		err := writer.WriteGame(ctx, &article)
@@ -119,14 +121,12 @@ func TestLoadGame(t *testing.T) {
 		// Act
 		now := time.Now()
 		article := model.Game{
-			Id:          "testArticle",
-			Title:       "testArticle",
-			StartDate:   now,
-			FinishDate:  &now, // 1 day later
-			Platform:    "Switch",
-			HoursPlayed: 25,
-			Rating:      5,
-			Notes:       "test notes",
+			Id:         "testArticle",
+			Title:      "testArticle",
+			StartDate:  now,
+			FinishDate: &now, // 1 day later
+			Platform:   "Switch",
+			Notes:      "test notes",
 		}
 		err := writer.WriteGame(ctx, &article)
 		assert.NoError(t, err)

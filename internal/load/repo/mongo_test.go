@@ -42,14 +42,16 @@ func TestWriteGame(t *testing.T) {
 	t.Run("Write article once", func(t *testing.T) {
 		// Act
 		now := time.Now()
+		hoursPlayed := 25
+		rating := 5
 		article := model.Game{
 			Id:          "testArticle",
 			Title:       "testArticle",
 			StartDate:   now,
 			FinishDate:  &now,
 			Platform:    "Switch",
-			HoursPlayed: 25,
-			Rating:      5,
+			HoursPlayed: &hoursPlayed,
+			Rating:      &rating,
 			Notes:       "test notes",
 		}
 		err := repo.WriteGame(ctx, &article)
