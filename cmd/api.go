@@ -36,6 +36,9 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 	}
 	defer mongodbClient.Close(ctx)
 	loadGamesUseCase := usecases.NewLoadGamesUseCase(repo.NewMongoGamesReader(mongodbClient))
+
+	statsProvider := repo.NewPlayedHoursPerPlatformStatsProvider(mongodbClient)
+
 	engine := html.New("./public", ".html")
 
 	// Add helper functions to template engine
@@ -110,6 +113,24 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 			"Limit": limitInt,
 			"Count": len(res.Games),
 			"Total": res.Total,
+		})
+	})
+
+	app.Get("/gamesperplatform", func(c fiber.Ctx) error {
+
+		useCase := usecases.NewPlayedHoursPerPlatformUseCase(statsProvider)
+		res, err := useCase.Execute(ctx)
+
+		if err != nil {
+			slog.ErrorContext(ctx, "Error while loading games", slog.Any("error", err))
+			return c.Status(fiber.StatusInternalServerError).SendString("Error while loading games")
+		}
+		if len(res) == 0 {
+			slog.WarnContext(ctx, "No stats found")
+		}
+
+		return c.Render("gamesperplatform", fiber.Map{
+			"Stats": res,
 		})
 	})
 

@@ -3,3 +3,8 @@ GET http://127.0.0.1:3000/games HTTP/1.1
 ####
 
 GET http://127.0.0.1:3000/ HTTP/1.1
+
+
+###
+
+GET http://127.0.0.1:3000/gamesperplatform HTTP/1.1
