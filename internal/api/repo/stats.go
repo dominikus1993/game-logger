@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dominikus1993/game-logger/internal/mongo"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type playedHoursPerPlatformStatsProvider struct {
@@ -16,10 +17,10 @@ func NewPlayedHoursPerPlatformStatsProvider(client *mongo.MongoClient) *playedHo
 
 func (p *playedHoursPerPlatformStatsProvider) PlayedHoursPerPlatform(ctx context.Context) (map[string]int, error) {
 	collection := p.client.GetCollection()
-	pipeline := []map[string]any{
-		{"$group": map[string]any{
+	pipeline := []bson.M{
+		{"$group": bson.M{
 			"_id":   "$platform",
-			"total": map[string]string{"$sum": "$hours_played"},
+			"total": bson.M{"$sum": "$hours_played"},
 		}},
 	}
 
@@ -46,10 +47,10 @@ func (p *playedHoursPerPlatformStatsProvider) PlayedHoursPerPlatform(ctx context
 
 func (p *playedHoursPerPlatformStatsProvider) PlayedHoursPerYear(ctx context.Context) (map[int]int, error) {
 	collection := p.client.GetCollection()
-	pipeline := []map[string]any{
-		{"$group": map[string]any{
-			"_id":   map[string]string{"$year": "$start_date"},
-			"total": map[string]string{"$sum": "$hours_played"},
+	pipeline := []bson.M{
+		{"$group": bson.M{
+			"_id":   bson.M{"$year": "$start_date"},
+			"total": bson.M{"$sum": "$hours_played"},
 		}},
 	}
 
