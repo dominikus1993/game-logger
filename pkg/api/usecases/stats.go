@@ -7,10 +7,10 @@ import (
 )
 
 type PlayedHoursPerPlatofmUseCase struct {
-	provider repo.PlayedHoursPerPlatformStatsProvider
+	provider repo.PlayedHoursStatsProvider
 }
 
-func NewPlayedHoursPerPlatformUseCase(provider repo.PlayedHoursPerPlatformStatsProvider) *PlayedHoursPerPlatofmUseCase {
+func NewPlayedHoursPerPlatformUseCase(provider repo.PlayedHoursStatsProvider) *PlayedHoursPerPlatofmUseCase {
 	return &PlayedHoursPerPlatofmUseCase{provider: provider}
 }
 
