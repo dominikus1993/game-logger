@@ -21,3 +21,27 @@ func (uc *PlayedHoursPerPlatofmUseCase) Execute(ctx context.Context) (map[string
 	}
 	return stats, nil
 }
+
+type RatingStatsUseCase struct {
+	provider repo.RatingStatsProvider
+}
+
+func NewRatingStatsUseCase(provider repo.RatingStatsProvider) *RatingStatsUseCase {
+	return &RatingStatsUseCase{provider: provider}
+}
+
+func (uc *RatingStatsUseCase) AvgRatingPerPlatform(ctx context.Context) (map[string]float64, error) {
+	stats, err := uc.provider.AvgRatingPerPlatform(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return stats, nil
+}
+
+func (uc *RatingStatsUseCase) AvgRatingPerYear(ctx context.Context) (map[int]float64, error) {
+	stats, err := uc.provider.AvgRatingPerYear(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return stats, nil
+}

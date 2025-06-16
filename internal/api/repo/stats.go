@@ -74,3 +74,73 @@ func (p *playedHoursPerPlatformStatsProvider) PlayedHoursPerYear(ctx context.Con
 
 	return stats, nil
 }
+
+type ratingStatsProvider struct {
+	client *mongo.MongoClient
+}
+
+func NewRatingStatsProvider(client *mongo.MongoClient) *ratingStatsProvider {
+	return &ratingStatsProvider{client: client}
+}
+
+func (r *ratingStatsProvider) AvgRatingPerPlatform(ctx context.Context) (map[string]float64, error) {
+	collection := r.client.GetCollection()
+	pipeline := []bson.M{
+		{"$match": bson.M{"rating": bson.M{"$ne": nil}}}, // Only include games with ratings
+		{"$group": bson.M{
+			"_id":       "$platform",
+			"avgRating": bson.M{"$avg": "$rating"},
+		}},
+	}
+
+	cursor, err := collection.Aggregate(ctx, pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	stats := make(map[string]float64)
+	for cursor.Next(ctx) {
+		var result struct {
+			ID        string  `bson:"_id"`
+			AvgRating float64 `bson:"avgRating"`
+		}
+		if err := cursor.Decode(&result); err != nil {
+			return nil, err
+		}
+		stats[result.ID] = result.AvgRating
+	}
+
+	return stats, nil
+}
+
+func (r *ratingStatsProvider) AvgRatingPerYear(ctx context.Context) (map[int]float64, error) {
+	collection := r.client.GetCollection()
+	pipeline := []bson.M{
+		{"$match": bson.M{"rating": bson.M{"$ne": nil}}}, // Only include games with ratings
+		{"$group": bson.M{
+			"_id":       bson.M{"$year": "$start_date"},
+			"avgRating": bson.M{"$avg": "$rating"},
+		}},
+	}
+
+	cursor, err := collection.Aggregate(ctx, pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	stats := make(map[int]float64)
+	for cursor.Next(ctx) {
+		var result struct {
+			ID        int     `bson:"_id"`
+			AvgRating float64 `bson:"avgRating"`
+		}
+		if err := cursor.Decode(&result); err != nil {
+			return nil, err
+		}
+		stats[result.ID] = result.AvgRating
+	}
+
+	return stats, nil
+}
