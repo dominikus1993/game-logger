@@ -78,7 +78,7 @@ func TestAvgRatingPerPlatform(t *testing.T) {
 		rating1 := 8
 		rating2 := 6
 		platform := "PC"
-		
+
 		game1 := model.Game{
 			Id:        "testGame2",
 			Title:     "testGame2",
@@ -93,7 +93,7 @@ func TestAvgRatingPerPlatform(t *testing.T) {
 			Platform:  platform,
 			Rating:    &rating2,
 		}
-		
+
 		err := writer.WriteGame(ctx, &game1)
 		assert.NoError(t, err)
 		err = writer.WriteGame(ctx, &game2)
@@ -174,7 +174,7 @@ func TestAvgRatingPerYear(t *testing.T) {
 		year := pastYear.Year()
 		rating1 := 7
 		rating2 := 9
-		
+
 		game1 := model.Game{
 			Id:        "testGame5",
 			Title:     "testGame5",
@@ -189,7 +189,7 @@ func TestAvgRatingPerYear(t *testing.T) {
 			Platform:  "Nintendo",
 			Rating:    &rating2,
 		}
-		
+
 		err := writer.WriteGame(ctx, &game1)
 		assert.NoError(t, err)
 		err = writer.WriteGame(ctx, &game2)
