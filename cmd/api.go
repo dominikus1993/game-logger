@@ -134,6 +134,24 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 		})
 	})
 
+	app.Get("/gamesperyear", func(c fiber.Ctx) error {
+
+		useCase := usecases.NewPlayedHoursPerYearUseCase(statsProvider)
+		res, err := useCase.Execute(ctx)
+
+		if err != nil {
+			slog.ErrorContext(ctx, "Error while loading games", slog.Any("error", err))
+			return c.Status(fiber.StatusInternalServerError).SendString("Error while loading games")
+		}
+		if len(res) == 0 {
+			slog.WarnContext(ctx, "No stats found")
+		}
+
+		return c.Render("gamesperyear", fiber.Map{
+			"Stats": res,
+		})
+	})
+
 	// Start the server on port 3000
 	log.Fatal(app.Listen(":3000"))
 	slog.InfoContext(ctx, "Parsing articles finished")

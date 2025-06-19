@@ -14,6 +14,9 @@
     <div hx-get="/gamesperplatform" hx-trigger="load">
         <img alt="Result loading..." class="htmx-indicator" width="150" src="/img/bars.svg"/>
     </div>
+    <div hx-get="/gamesperyear" hx-trigger="load">
+        <img alt="Result loading..." class="htmx-indicator" width="150" src="/img/bars.svg"/>
+    </div>
     <h1>Total games: {{.Total}}</h1>
     <table>
         <thead>

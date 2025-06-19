@@ -1,10 +1,10 @@
 <div>
-  <canvas id="games"></canvas>
+  <canvas id="gamesperplatform"></canvas>
 </div>
 
 <script>
     const data = {{ .Stats }};
-    const ctx = document.getElementById('games');
+    const ctx = document.getElementById('gamesperplatform');
     const chartData = {
       labels: Object.keys(data),
       datasets: [{

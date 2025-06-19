@@ -22,6 +22,22 @@ func (uc *PlayedHoursPerPlatofmUseCase) Execute(ctx context.Context) (map[string
 	return stats, nil
 }
 
+type playedHoursPerYearUseCase struct {
+	provider repo.PlayedHoursStatsProvider
+}
+
+func NewPlayedHoursPerYearUseCase(provider repo.PlayedHoursStatsProvider) *playedHoursPerYearUseCase {
+	return &playedHoursPerYearUseCase{provider: provider}
+}
+
+func (uc *playedHoursPerYearUseCase) Execute(ctx context.Context) (map[int]int, error) {
+	stats, err := uc.provider.PlayedHoursPerYear(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return stats, nil
+}
+
 type RatingStatsUseCase struct {
 	provider repo.RatingStatsProvider
 }

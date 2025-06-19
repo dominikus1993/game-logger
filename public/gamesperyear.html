@@ -1,0 +1,20 @@
+<div>
+  <canvas id="gamesperyear"></canvas>
+</div>
+
+<script>
+    const gamesperyeartData = {{ .Stats }};
+    const gamesperyear = document.getElementById('gamesperyear');
+    const gamesperyearChartData = {
+      labels: Object.keys(gamesperyeartData),
+      datasets: [{
+        label: 'Games per Year',
+        data: Object.values(gamesperyeartData),
+        hoverOffset: 4
+      }]
+    };
+    new Chart(gamesperyear, {
+      type: 'pie',
+      data: gamesperyearChartData,
+    });
+</script>
