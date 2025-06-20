@@ -33,3 +33,28 @@ func TestLoadGamesService(t *testing.T) {
 	assert.Equal(t, 25, *firstGame.HoursPlayed)
 	assert.Equal(t, "Ori and the Will of the Wisps", firstGame.Title)
 }
+
+func TestParseRating(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected *int
+	}{
+		{"", nil},
+		{"5", intPtr(5)},
+		{"10", intPtr(10)},
+		{"-1", intPtr(-1)},
+		{"11", intPtr(11)},
+	}
+
+	for _, test := range tests {
+		t.Run(test.input, func(t *testing.T) {
+			result := parseRating(test.input)
+			assert.Equal(t, test.expected, result)
+		})
+	}
+
+}
+
+func intPtr(i int) *int {
+	return &i
+}
