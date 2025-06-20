@@ -58,7 +58,7 @@ func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *model.Game {
 				finishDateTime = &finishDateTimeParsed
 			}
 			game := &model.Game{
-				Id:          generateId(title),
+				Id:          generateId(title, startDate),
 				Title:       title,
 				Rating:      parseRating(row.GetCell(1).String()),
 				Platform:    row.GetCell(2).String(),
@@ -83,7 +83,7 @@ func shouldSkipRow(title string) bool {
 	return title == "" || title == "Lista" || title == "Gra"
 }
 
-func generateId(title string) string {
+func generateId(title string, startDate time.Time) string {
 	if title == "" {
 		return uuid.NewString()
 	}
@@ -92,7 +92,7 @@ func generateId(title string) string {
 	if normalizedTitle == "" {
 		return uuid.NewString()
 	}
-	data := normalizedTitle + time.Now().Format(time.RFC3339)
+	data := normalizedTitle + startDate.Format("2006-01-02")
 	return uuid.NewSHA1(uuid.NameSpaceDNS, []byte(data)).String()
 }
 
