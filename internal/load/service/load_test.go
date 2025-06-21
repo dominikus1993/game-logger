@@ -55,6 +55,17 @@ func TestParseRating(t *testing.T) {
 	}
 }
 
+func FuzzLowercaseAndTirm(f *testing.F) {
+	f.Add("  Ori and the Will of the Wisps  ")
+	f.Add("  Ori and the Will of the Wisps")
+	f.Add("Ori and the Will of the Wisps  ")
+	f.Add("Ori and the Will of the Wisps")
+	f.Fuzz(func(t *testing.T, input string) {
+		result := lowercaseAndTirm(input)
+		assert.Equal(t, "ori and the will of the wisps", result)
+	})
+}
+
 func TestGenerateId(t *testing.T) {
 	title := "Test Game"
 	startDate := time.Date(2023, 10, 1, 0, 0, 0, 0, time.UTC)
