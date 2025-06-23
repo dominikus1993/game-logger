@@ -8,10 +8,12 @@ import (
 
 	"github.com/dominikus1993/game-logger/internal/api/repo"
 	"github.com/dominikus1993/game-logger/internal/mongo"
+	domainRepo "github.com/dominikus1993/game-logger/pkg/api/repo"
 	"github.com/dominikus1993/game-logger/pkg/api/usecases"
 	json "github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/template/html/v2"
+	"github.com/samber/do"
 	"github.com/urfave/cli/v3"
 )
 
@@ -35,9 +37,23 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 		return cli.Exit("can't create mongodb client", 1)
 	}
 	defer mongodbClient.Close(ctx)
-	loadGamesUseCase := usecases.NewLoadGamesUseCase(repo.NewMongoGamesReader(mongodbClient))
 
 	statsProvider := repo.NewPlayedHoursPerPlatformStatsProvider(mongodbClient)
+	injector := do.New()
+
+	do.Provide(injector, func(i *do.Injector) (*mongo.MongoClient, error) {
+		return mongodbClient, nil
+	})
+
+	do.Provide(injector, func(i *do.Injector) (domainRepo.GamesReader, error) {
+		client := do.MustInvoke[*mongo.MongoClient](i)
+		return repo.NewMongoGamesReader(client)
+	})
+
+	do.Provide(injector, func(i *do.Injector) (*usecases.LoadGamesUseCase, error) {
+		gamesReader := do.MustInvoke[domainRepo.GamesReader](i)
+		return usecases.NewLoadGamesUseCase(gamesReader)
+	})
 
 	engine := html.New("./public", ".html")
 
@@ -63,6 +79,11 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 	app.Get("/", func(c fiber.Ctx) error {
 		pageInt := 1
 		limitInt := 10
+		loadGamesUseCase, err := do.Invoke[*usecases.LoadGamesUseCase](injector)
+		if err != nil {
+			slog.ErrorContext(ctx, "Error while invoking LoadGamesUseCase", slog.Any("error", err))
+			return c.Status(fiber.StatusInternalServerError).SendString("Error")
+		}
 		res, err := loadGamesUseCase.Execute(ctx, usecases.LoadGamesQuery{Page: pageInt, Size: limitInt})
 
 		if err != nil {
@@ -97,6 +118,11 @@ func Api(ctx context.Context, cmd *cli.Command) error {
 			return c.Status(fiber.StatusBadRequest).SendString("Invalid limit number")
 		}
 
+		loadGamesUseCase, err := do.Invoke[*usecases.LoadGamesUseCase](injector)
+		if err != nil {
+			slog.ErrorContext(ctx, "Error while invoking LoadGamesUseCase", slog.Any("error", err))
+			return c.Status(fiber.StatusInternalServerError).SendString("Error")
+		}
 		res, err := loadGamesUseCase.Execute(ctx, usecases.LoadGamesQuery{Page: pageInt, Size: limitInt})
 
 		if err != nil {

@@ -8,6 +8,7 @@ require (
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4
 	github.com/gofiber/template/html/v2 v2.1.3
 	github.com/google/uuid v1.6.0
+	github.com/samber/do v1.6.0
 	github.com/stretchr/testify v1.10.0
 	github.com/tealeg/xlsx/v3 v3.3.13
 	github.com/testcontainers/testcontainers-go/modules/mongodb v0.37.0

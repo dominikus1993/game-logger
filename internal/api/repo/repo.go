@@ -15,8 +15,8 @@ type MongoGamesReader struct {
 	client *mongo.MongoClient
 }
 
-func NewMongoGamesReader(client *mongo.MongoClient) *MongoGamesReader {
-	return &MongoGamesReader{client: client}
+func NewMongoGamesReader(client *mongo.MongoClient) (repo.GamesReader, error) {
+	return &MongoGamesReader{client: client}, nil
 }
 
 func (w *MongoGamesReader) LoadGames(ctx context.Context, query repo.LoadGamesQuery) ([]*model.Game, error) {

@@ -32,7 +32,8 @@ func TestLoadGamesUseCase_Execute_Success(t *testing.T) {
 	mockReader.On("LoadGames", ctx, repo.LoadGamesQuery{Page: 1, Size: 2}).Return(games, nil)
 	mockReader.On("Count", ctx).Return(2, nil)
 
-	uc := NewLoadGamesUseCase(mockReader)
+	uc, err := NewLoadGamesUseCase(mockReader)
+	assert.NoError(t, err)
 	resp, err := uc.Execute(ctx, LoadGamesQuery{Page: 1, Size: 2})
 
 	assert.NoError(t, err)
@@ -49,7 +50,8 @@ func TestLoadGamesUseCase_Execute_LoadGamesError(t *testing.T) {
 	mockReader := new(mockGamesReader)
 	mockReader.On("LoadGames", ctx, repo.LoadGamesQuery{Page: 1, Size: 2}).Return(games, errors.New("failed"))
 
-	uc := NewLoadGamesUseCase(mockReader)
+	uc, err := NewLoadGamesUseCase(mockReader)
+	assert.NoError(t, err)
 	resp, err := uc.Execute(ctx, LoadGamesQuery{Page: 1, Size: 2})
 
 	assert.Error(t, err)
@@ -64,7 +66,8 @@ func TestLoadGamesUseCase_Execute_CountError(t *testing.T) {
 	mockReader.On("LoadGames", ctx, repo.LoadGamesQuery{Page: 1, Size: 1}).Return(games, nil)
 	mockReader.On("Count", ctx).Return(0, assert.AnError)
 
-	uc := NewLoadGamesUseCase(mockReader)
+	uc, err := NewLoadGamesUseCase(mockReader)
+	assert.NoError(t, err)
 	resp, err := uc.Execute(ctx, LoadGamesQuery{Page: 1, Size: 1})
 
 	assert.Error(t, err)

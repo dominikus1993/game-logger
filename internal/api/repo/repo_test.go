@@ -41,7 +41,11 @@ func TestCount(t *testing.T) {
 	defer client.Close(ctx)
 	writer := writer.NewMongoGamesWriter(client)
 
-	reader := NewMongoGamesReader(client)
+	reader, err := NewMongoGamesReader(client)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	t.Run("Read when no articles exist", func(t *testing.T) {
 		// Act
@@ -103,7 +107,11 @@ func TestLoadGame(t *testing.T) {
 	defer client.Close(ctx)
 	writer := writer.NewMongoGamesWriter(client)
 
-	reader := NewMongoGamesReader(client)
+	reader, err := NewMongoGamesReader(client)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	t.Run("Read when no articles exist", func(t *testing.T) {
 		// Act

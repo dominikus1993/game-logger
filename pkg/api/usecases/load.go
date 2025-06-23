@@ -21,8 +21,8 @@ type LoadGamesResponse struct {
 	Total int           // Total number of games available
 }
 
-func NewLoadGamesUseCase(provider repo.GamesReader) *LoadGamesUseCase {
-	return &LoadGamesUseCase{provider: provider}
+func NewLoadGamesUseCase(provider repo.GamesReader) (*LoadGamesUseCase, error) {
+	return &LoadGamesUseCase{provider: provider}, nil
 }
 
 func (uc *LoadGamesUseCase) Execute(ctx context.Context, query LoadGamesQuery) (*LoadGamesResponse, error) {
