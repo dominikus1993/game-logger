@@ -22,6 +22,7 @@ func (w *MongoGamesWriter) WriteGame(ctx context.Context, game *model.Game) erro
 	filter := bson.M{"_id": game.Id}
 	model := newMongoGame(game)
 	col := w.client.GetCollection()
+	game := col.FindOneAndUpdate()
 	_, err := col.ReplaceOne(ctx, filter, model, options.Replace().SetUpsert(true))
 	if err != nil {
 		return err
@@ -30,25 +31,37 @@ func (w *MongoGamesWriter) WriteGame(ctx context.Context, game *model.Game) erro
 }
 
 type mongoGame struct {
-	Id          string     `bson:"_id"`
-	Title       string     `bson:"title"`
-	StartDate   time.Time  `bson:"start_date"`
-	FinishDate  *time.Time `bson:"finish_date,omitempty"`
-	Platform    string     `bson:"platform,omitempty"`
-	HoursPlayed *int       `bson:"hours_played,omitempty"`
-	Rating      *int       `bson:"rating,omitempty"`
-	Notes       string     `bson:"notes,omitempty"`
+	Id           string             `bson:"_id"`
+	Title        string             `bson:"title"`
+	Playthroughs []mongoPlaythrough `bson:"playthroughs,omitempty"`
+}
+
+type mongoPlaythrough struct {
+	StartDate   time.Time  `json:"start_date"`
+	FinishDate  *time.Time `json:"finish_date,omitempty"`
+	Platform    string     `json:"platform,omitempty"`
+	HoursPlayed *int       `json:"hours_played,omitempty"`
+	Rating      *int       `json:"rating,omitempty"`
+	Notes       string     `json:"notes,omitempty"`
 }
 
 func newMongoGame(game *model.Game) *mongoGame {
-	return &mongoGame{
-		Id:          game.Id,
-		Title:       game.Title,
-		StartDate:   game.StartDate,
-		FinishDate:  game.FinishDate,
-		Platform:    game.Platform,
-		HoursPlayed: game.HoursPlayed,
-		Rating:      game.Rating,
-		Notes:       game.Notes,
+	mongoGame := mongoGame{
+		Id:    game.Id,
+		Title: game.Title,
 	}
+
+	for _, pt := range game.Playthroughs {
+		mongoPt := mongoPlaythrough{
+			StartDate:   pt.StartDate,
+			FinishDate:  pt.FinishDate,
+			Platform:    pt.Platform,
+			HoursPlayed: pt.HoursPlayed,
+			Rating:      pt.Rating,
+			Notes:       pt.Notes,
+		}
+		mongoGame.Playthroughs = append(mongoGame.Playthroughs, mongoPt)
+	}
+
+	return &mongoGame
 }

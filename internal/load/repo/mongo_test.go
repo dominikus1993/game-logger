@@ -45,14 +45,18 @@ func TestWriteGame(t *testing.T) {
 		hoursPlayed := 25
 		rating := 5
 		article := model.Game{
-			Id:          "testArticle",
-			Title:       "testArticle",
-			StartDate:   now,
-			FinishDate:  &now,
-			Platform:    "Switch",
-			HoursPlayed: &hoursPlayed,
-			Rating:      &rating,
-			Notes:       "test notes",
+			Id:    "testArticle",
+			Title: "testArticle",
+			Playthroughs: []model.Playthrough{
+				{
+					StartDate:   now,
+					FinishDate:  &now,
+					Platform:    "Switch",
+					HoursPlayed: &hoursPlayed,
+					Rating:      &rating,
+					Notes:       "test notes",
+				},
+			},
 		}
 		err := repo.WriteGame(ctx, &article)
 		assert.NoError(t, err)

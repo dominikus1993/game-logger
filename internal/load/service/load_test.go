@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/dominikus1993/go-toolkit/channels"
 	"github.com/stretchr/testify/assert"
@@ -68,10 +67,9 @@ func FuzzLowercaseAndTirm(f *testing.F) {
 
 func TestGenerateId(t *testing.T) {
 	title := "Test Game"
-	startDate := time.Date(2023, 10, 1, 0, 0, 0, 0, time.UTC)
-	expectedId := "6722fe21-91da-512a-b6a1-fb906b8028dc" // Example UUID, replace with actual expected value
+	expectedId := "b1bf8ccb-bf4c-5d84-bd77-3f81da7caacb" // Example UUID, replace with actual expected value
 
-	id := generateId(title, startDate)
+	id := generateId(title)
 	assert.Equal(t, expectedId, id)
 }
 

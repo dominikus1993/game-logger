@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dominikus1993/game-logger/pkg/model"
 	"github.com/google/uuid"
 	"github.com/tealeg/xlsx/v3"
 )
@@ -24,8 +23,8 @@ func NewExcelLoadGamesService(path, sheetName string) *ExcelLoadGamesService {
 	}
 }
 
-func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *model.Game {
-	games := make(chan *model.Game, 10)
+func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *ExcelGame {
+	games := make(chan *ExcelGame, 10)
 
 	go func(ctx context.Context, service *ExcelLoadGamesService) {
 		defer close(games)
@@ -57,8 +56,8 @@ func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *model.Game {
 				}
 				finishDateTime = &finishDateTimeParsed
 			}
-			game := &model.Game{
-				Id:          generateId(title, startDate),
+			game := &ExcelGame{
+				Id:          generateId(title),
 				Title:       title,
 				Rating:      parseRating(row.GetCell(1).String()),
 				Platform:    row.GetCell(2).String(),
@@ -83,7 +82,7 @@ func shouldSkipRow(title string) bool {
 	return title == "" || title == "Lista" || title == "Gra"
 }
 
-func generateId(title string, startDate time.Time) string {
+func generateId(title string) string {
 	if title == "" {
 		return uuid.NewString()
 	}
@@ -92,7 +91,7 @@ func generateId(title string, startDate time.Time) string {
 	if normalizedTitle == "" {
 		return uuid.NewString()
 	}
-	data := normalizedTitle + startDate.Format("2006-01-02")
+	data := normalizedTitle
 	return uuid.NewSHA1(uuid.NameSpaceDNS, []byte(data)).String()
 }
 
@@ -109,4 +108,15 @@ func parseRating(rating string) *int {
 		return nil
 	}
 	return &r
+}
+
+type ExcelGame struct {
+	Id          string     `json:"id"`
+	Title       string     `json:"title"`
+	StartDate   time.Time  `json:"start_date"`
+	FinishDate  *time.Time `json:"finish_date,omitempty"`
+	Platform    string     `json:"platform,omitempty"`
+	HoursPlayed *int       `json:"hours_played,omitempty"`
+	Rating      *int       `json:"rating,omitempty"`
+	Notes       string     `json:"notes,omitempty"`
 }
