@@ -7,6 +7,7 @@ import (
 	"github.com/dominikus1993/game-logger/internal/mongo"
 	"github.com/dominikus1993/game-logger/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
+	mong "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -22,7 +23,18 @@ func (w *MongoGamesWriter) WriteGame(ctx context.Context, game *model.Game) erro
 	filter := bson.M{"_id": game.Id}
 	model := newMongoGame(game)
 	col := w.client.GetCollection()
-	game := col.FindOneAndUpdate()
+	dbGame := col.FindOne(ctx, filter, options.FindOne())
+
+	if dbGame.Err() == mong.ErrNoDocuments {
+
+	}
+
+	var gameFromDb mongoGame
+	err := dbGame.Decode(&gameFromDb)
+	if err == nil {
+
+	}
+
 	_, err := col.ReplaceOne(ctx, filter, model, options.Replace().SetUpsert(true))
 	if err != nil {
 		return err
