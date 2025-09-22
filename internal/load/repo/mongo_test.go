@@ -61,4 +61,29 @@ func TestWriteGame(t *testing.T) {
 		err := repo.WriteGame(ctx, &article)
 		assert.NoError(t, err)
 	})
+
+	t.Run("Write article twice", func(t *testing.T) {
+		// Act
+		now := time.Now()
+		hoursPlayed := 25
+		rating := 5
+		article := model.Game{
+			Id:    "testArticle2",
+			Title: "testArticle2",
+			Playthroughs: []model.Playthrough{
+				{
+					StartDate:   now,
+					FinishDate:  &now,
+					Platform:    "Switch",
+					HoursPlayed: &hoursPlayed,
+					Rating:      &rating,
+					Notes:       "test notes",
+				},
+			},
+		}
+		err := repo.WriteGame(ctx, &article)
+		assert.NoError(t, err)
+		err = repo.WriteGame(ctx, &article)
+		assert.NoError(t, err)
+	})
 }

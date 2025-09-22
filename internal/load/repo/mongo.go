@@ -26,16 +26,19 @@ func (w *MongoGamesWriter) WriteGame(ctx context.Context, game *model.Game) erro
 	dbGame := col.FindOne(ctx, filter, options.FindOne())
 
 	if dbGame.Err() == mong.ErrNoDocuments {
-
+		// Game not found, insert new game
+		_, err := col.InsertOne(ctx, model)
+		return err
 	}
 
 	var gameFromDb mongoGame
 	err := dbGame.Decode(&gameFromDb)
-	if err == nil {
-
+	if err != nil {
+		return err
 	}
-
-	_, err := col.ReplaceOne(ctx, filter, model, options.Replace().SetUpsert(true))
+	gameFromDb.Playthroughs = append(gameFromDb.Playthroughs, model.Playthroughs...)
+	model = &gameFromDb
+	_, err = col.ReplaceOne(ctx, filter, model, options.Replace().SetUpsert(true))
 	if err != nil {
 		return err
 	}
