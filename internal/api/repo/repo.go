@@ -47,16 +47,8 @@ func (w *MongoGamesReader) LoadGames(ctx context.Context, query repo.LoadGamesQu
 		if err := cursor.Decode(&mongoGame); err != nil {
 			return nil, err
 		}
-		games = append(games, &model.Game{
-			Id:          mongoGame.Id,
-			Title:       mongoGame.Title,
-			StartDate:   mongoGame.StartDate,
-			FinishDate:  mongoGame.FinishDate,
-			Platform:    mongoGame.Platform,
-			HoursPlayed: mongoGame.HoursPlayed,
-			Rating:      mongoGame.Rating,
-			Notes:       mongoGame.Notes,
-		})
+		game := MapGameFromMongo(&mongoGame)
+		games = append(games, game)
 	}
 	if err := cursor.Err(); err != nil {
 		return nil, err
@@ -74,12 +66,34 @@ func (w *MongoGamesReader) Count(ctx context.Context) (int, error) {
 }
 
 type mongoGame struct {
-	Id          string     `bson:"_id"`
-	Title       string     `bson:"title"`
+	Id           string             `bson:"_id"`
+	Title        string             `bson:"title"`
+	Playthroughs []mongoPlaythrough `bson:"playthroughs,omitempty"`
+}
+
+type mongoPlaythrough struct {
 	StartDate   time.Time  `bson:"start_date"`
 	FinishDate  *time.Time `bson:"finish_date,omitempty"`
 	Platform    string     `bson:"platform,omitempty"`
 	HoursPlayed *int       `bson:"hours_played,omitempty"`
 	Rating      *int       `bson:"rating,omitempty"`
 	Notes       string     `bson:"notes,omitempty"`
+}
+
+func MapGameFromMongo(mg *mongoGame) *model.Game {
+	game := &model.Game{
+		Id:    mg.Id,
+		Title: mg.Title,
+	}
+	for _, pt := range mg.Playthroughs {
+		game.AddPlaythrough(model.Playthrough{
+			StartDate:   pt.StartDate,
+			FinishDate:  pt.FinishDate,
+			Platform:    pt.Platform,
+			HoursPlayed: pt.HoursPlayed,
+			Rating:      pt.Rating,
+			Notes:       pt.Notes,
+		})
+	}
+	return game
 }

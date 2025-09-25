@@ -61,15 +61,18 @@ func TestCount(t *testing.T) {
 		hoursPlayed := 25
 		rating := 5
 		article := model.Game{
-			Id:          "testArticle",
-			Title:       "testArticle",
-			StartDate:   now,
-			FinishDate:  &now,
-			Platform:    "Switch",
-			HoursPlayed: &hoursPlayed,
-			Rating:      &rating,
-			Notes:       "test notes",
-		}
+			Id:    "testArticle",
+			Title: "testArticle",
+			Playthroughs: []model.Playthrough{
+				{
+					StartDate:   now,
+					FinishDate:  &now,
+					Platform:    "Switch",
+					HoursPlayed: &hoursPlayed,
+					Rating:      &rating,
+					Notes:       "test notes",
+				},
+			}}
 		err := writer.WriteGame(ctx, &article)
 		assert.NoError(t, err)
 
@@ -129,12 +132,14 @@ func TestLoadGame(t *testing.T) {
 		// Act
 		now := time.Now()
 		article := model.Game{
-			Id:         "testArticle",
-			Title:      "testArticle",
-			StartDate:  now,
-			FinishDate: &now, // 1 day later
-			Platform:   "Switch",
-			Notes:      "test notes",
+			Id:    "testArticle",
+			Title: "testArticle",
+			Playthroughs: []model.Playthrough{{
+				StartDate:  now,
+				FinishDate: &now, // 1 day later
+				Platform:   "Switch",
+				Notes:      "test notes",
+			}},
 		}
 		err := writer.WriteGame(ctx, &article)
 		assert.NoError(t, err)
