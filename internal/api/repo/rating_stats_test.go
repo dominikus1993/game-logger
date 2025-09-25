@@ -56,11 +56,13 @@ func TestAvgRatingPerPlatform(t *testing.T) {
 		rating := 8
 		platform := "Switch"
 		game := model.Game{
-			Id:        "testGame1",
-			Title:     "testGame1",
-			StartDate: now,
-			Platform:  platform,
-			Rating:    &rating,
+			Id:    "testGame1",
+			Title: "testGame1",
+			Playthroughs: []model.Playthrough{{
+				StartDate: now,
+				Platform:  platform,
+				Rating:    &rating,
+			}},
 		}
 		err := writer.WriteGame(ctx, &game)
 		assert.NoError(t, err)
@@ -80,18 +82,22 @@ func TestAvgRatingPerPlatform(t *testing.T) {
 		platform := "PC"
 
 		game1 := model.Game{
-			Id:        "testGame2",
-			Title:     "testGame2",
-			StartDate: now,
-			Platform:  platform,
-			Rating:    &rating1,
+			Id:    "testGame2",
+			Title: "testGame2",
+			Playthroughs: []model.Playthrough{{
+				StartDate: now,
+				Platform:  platform,
+				Rating:    &rating1,
+			}},
 		}
 		game2 := model.Game{
-			Id:        "testGame3",
-			Title:     "testGame3",
-			StartDate: now,
-			Platform:  platform,
-			Rating:    &rating2,
+			Id:    "testGame3",
+			Title: "testGame3",
+			Playthroughs: []model.Playthrough{{
+				StartDate: now,
+				Platform:  platform,
+				Rating:    &rating2,
+			}},
 		}
 
 		err := writer.WriteGame(ctx, &game1)
@@ -152,11 +158,13 @@ func TestAvgRatingPerYear(t *testing.T) {
 		rating := 9
 		platform := "PS5"
 		game := model.Game{
-			Id:        "testGame4",
-			Title:     "testGame4",
-			StartDate: now,
-			Platform:  platform,
-			Rating:    &rating,
+			Id:    "testGame4",
+			Title: "testGame4",
+			Playthroughs: []model.Playthrough{{
+				StartDate: now,
+				Platform:  platform,
+				Rating:    &rating,
+			}},
 		}
 		err := writer.WriteGame(ctx, &game)
 		assert.NoError(t, err)
@@ -176,18 +184,22 @@ func TestAvgRatingPerYear(t *testing.T) {
 		rating2 := 9
 
 		game1 := model.Game{
-			Id:        "testGame5",
-			Title:     "testGame5",
-			StartDate: pastYear,
-			Platform:  "Xbox",
-			Rating:    &rating1,
+			Id:    "testGame5",
+			Title: "testGame5",
+			Playthroughs: []model.Playthrough{{
+				StartDate: pastYear,
+				Platform:  "Xbox",
+				Rating:    &rating1,
+			}},
 		}
 		game2 := model.Game{
-			Id:        "testGame6",
-			Title:     "testGame6",
-			StartDate: pastYear,
-			Platform:  "Nintendo",
-			Rating:    &rating2,
+			Id:    "testGame6",
+			Title: "testGame6",
+			Playthroughs: []model.Playthrough{{
+				StartDate: pastYear,
+				Platform:  "Nintendo",
+				Rating:    &rating2,
+			}},
 		}
 
 		err := writer.WriteGame(ctx, &game1)

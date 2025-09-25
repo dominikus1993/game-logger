@@ -56,13 +56,15 @@ func TestPlayedHoursPerPlatform(t *testing.T) {
 		hoursPlayed := 25
 		platform := "Switch"
 		article := model.Game{
-			Id:          "testArticle",
-			Title:       "testArticle",
-			StartDate:   now,
-			FinishDate:  &now, // 1 day later
-			Platform:    platform,
-			Notes:       "test notes",
-			HoursPlayed: &hoursPlayed,
+			Id:    "testArticle",
+			Title: "testArticle",
+			Playthroughs: []model.Playthrough{{
+				StartDate:   now,
+				FinishDate:  &now, // 1 day later
+				Platform:    platform,
+				Notes:       "test notes",
+				HoursPlayed: &hoursPlayed,
+			}},
 		}
 		err := writer.WriteGame(ctx, &article)
 		assert.NoError(t, err)
@@ -119,13 +121,15 @@ func TestPlayedHoursPerYear(t *testing.T) {
 		hoursPlayed := 25
 		platform := "Switch"
 		article := model.Game{
-			Id:          "testArticle",
-			Title:       "testArticle",
-			StartDate:   now,
-			FinishDate:  &now, // 1 day later
-			Platform:    platform,
-			Notes:       "test notes",
-			HoursPlayed: &hoursPlayed,
+			Id:    "testArticle",
+			Title: "testArticle",
+			Playthroughs: []model.Playthrough{{
+				StartDate:   now,
+				FinishDate:  &now, // 1 day later
+				Platform:    platform,
+				Notes:       "test notes",
+				HoursPlayed: &hoursPlayed,
+			}},
 		}
 		err := writer.WriteGame(ctx, &article)
 		assert.NoError(t, err)
