@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dominikus1993/game-logger/pkg/model"
 	"github.com/google/uuid"
 	"github.com/tealeg/xlsx/v3"
 )
@@ -23,8 +24,8 @@ func NewExcelLoadGamesService(path, sheetName string) *ExcelLoadGamesService {
 	}
 }
 
-func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *ExcelGame {
-	games := make(chan *ExcelGame, 10)
+func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *model.Game {
+	games := make(chan *model.Game, 10)
 
 	go func(ctx context.Context, service *ExcelLoadGamesService) {
 		defer close(games)
@@ -56,14 +57,17 @@ func (s *ExcelLoadGamesService) Load(ctx context.Context) <-chan *ExcelGame {
 				}
 				finishDateTime = &finishDateTimeParsed
 			}
-			game := &ExcelGame{
-				Id:          generateId(title),
-				Title:       title,
-				Rating:      parseRating(row.GetCell(1).String()),
-				Platform:    row.GetCell(2).String(),
-				StartDate:   startDate,
-				FinishDate:  finishDateTime,
-				HoursPlayed: parseRating(row.GetCell(5).String()),
+			game := &model.Game{
+				Id:    generateId(title),
+				Title: title,
+
+				Playthroughs: []model.Playthrough{{
+					Rating:      parseRating(row.GetCell(1).String()),
+					Platform:    row.GetCell(2).String(),
+					StartDate:   startDate,
+					FinishDate:  finishDateTime,
+					HoursPlayed: parseRating(row.GetCell(5).String()),
+				}},
 			}
 			games <- game
 			return nil
