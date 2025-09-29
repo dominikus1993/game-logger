@@ -49,8 +49,8 @@ func (p *playedHoursPerPlatformStatsProvider) PlayedHoursPerYear(ctx context.Con
 	collection := p.client.GetCollection()
 	pipeline := []bson.M{
 		{"$group": bson.M{
-			"_id":   bson.M{"$year": "$start_date"},
-			"total": bson.M{"$sum": "$hours_played"},
+			"_id":   bson.M{"$year": "$playthroughs.start_date"},
+			"total": bson.M{"$sum": "$playthroughs.hours_played"},
 		}},
 	}
 
@@ -86,10 +86,10 @@ func NewRatingStatsProvider(client *mongo.MongoClient) *ratingStatsProvider {
 func (r *ratingStatsProvider) AvgRatingPerPlatform(ctx context.Context) (map[string]float64, error) {
 	collection := r.client.GetCollection()
 	pipeline := []bson.M{
-		{"$match": bson.M{"rating": bson.M{"$ne": nil}}}, // Only include games with ratings
+		{"$match": bson.M{"playthroughs.rating": bson.M{"$ne": nil}}}, // Only include games with ratings
 		{"$group": bson.M{
-			"_id":       "$platform",
-			"avgRating": bson.M{"$avg": "$rating"},
+			"_id":       "$playthroughs.platform",
+			"avgRating": bson.M{"$avg": "$playthroughs.rating"},
 		}},
 	}
 
@@ -117,10 +117,10 @@ func (r *ratingStatsProvider) AvgRatingPerPlatform(ctx context.Context) (map[str
 func (r *ratingStatsProvider) AvgRatingPerYear(ctx context.Context) (map[int]float64, error) {
 	collection := r.client.GetCollection()
 	pipeline := []bson.M{
-		{"$match": bson.M{"rating": bson.M{"$ne": nil}}}, // Only include games with ratings
+		{"$match": bson.M{"playthroughs.rating": bson.M{"$ne": nil}}}, // Only include games with ratings
 		{"$group": bson.M{
-			"_id":       bson.M{"$year": "$start_date"},
-			"avgRating": bson.M{"$avg": "$rating"},
+			"_id":       bson.M{"$year": "$playthroughs.start_date"},
+			"avgRating": bson.M{"$avg": "$playthroughs.rating"},
 		}},
 	}
 

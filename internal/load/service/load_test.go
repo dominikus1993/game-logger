@@ -41,10 +41,10 @@ func TestParseRating(t *testing.T) {
 		expected *int
 	}{
 		{"", nil},
-		{"5", intPtr(5)},
-		{"10", intPtr(10)},
-		{"-1", intPtr(-1)},
-		{"11", intPtr(11)},
+		{"5", Pointer(5)},
+		{"10", Pointer(10)},
+		{"-1", Pointer(-1)},
+		{"11", Pointer(11)},
 	}
 
 	for _, test := range tests {
@@ -74,6 +74,6 @@ func TestGenerateId(t *testing.T) {
 	assert.Equal(t, expectedId, id)
 }
 
-func intPtr(i int) *int {
+func Pointer[T any](i T) *T {
 	return &i
 }
